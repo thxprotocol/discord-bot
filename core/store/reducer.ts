@@ -1,13 +1,14 @@
 import { produce } from 'immer';
 import ActionTypes from './actionTypes';
+import { DEFAULT_PREFIX } from 'constants/DefaultPrefix';
 import { ApplicationRootState, ApplicationActions } from './types';
 
 const initialRootState: ApplicationRootState = {
   cooldown: {},
   meta: {
     commands: {},
-    defaultPrefix: process.env.DEFAULT_PREFIX || '',
-    ownerId: process.env.ADMINISTRATOR || ''
+    defaultPrefix: process.env.DEFAULT_PREFIX || DEFAULT_PREFIX,
+    ownerId: process.env.ADMINISTRATOR || '-121212313' // Make sure it be safe if blank
   }
 };
 
