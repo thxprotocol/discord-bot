@@ -1,4 +1,5 @@
 import getPrefix from '../getPrefix';
+import { DEFAULT_PREFIX } from 'constants/DefaultPrefix';
 
 test('Initial prefix the same as the value in enviroment', () => {
   const OLD_ENV = process.env;
@@ -12,5 +13,5 @@ test('Initial prefix the same as the value in enviroment', () => {
   });
 
   const prefix = getPrefix();
-  expect(prefix).toBe(OLD_ENV.DEFAULT_PREFIX || '');
+  expect(prefix).toBe(OLD_ENV.DEFAULT_PREFIX || DEFAULT_PREFIX);
 });
