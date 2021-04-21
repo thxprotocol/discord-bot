@@ -5,5 +5,5 @@ test('Check command is checked correctly', () => {
   const prefix = getPrefix();
   const fakeCommand = 'test';
   expect(isCommand(prefix + fakeCommand)).toBe(true);
-  expect(isCommand(fakeCommand)).toThrowError();
+  expect(isCommand(fakeCommand)).toBe(false);
 });
