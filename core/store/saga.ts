@@ -27,6 +27,10 @@ import { useDispatch, useSelector } from '@hooks';
 import { selectCommandByName } from './selectors';
 import { Action } from 'redux';
 
+/**
+ * Application starting process
+ * going on here.
+ */
 function* callInitApplication() {
   const logger = getLogger();
   logger.info(`Initializing..`);
