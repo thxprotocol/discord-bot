@@ -21,6 +21,7 @@ import {
 import ActionTypes from './actionTypes';
 import { Commands } from 'types';
 import { getCommand } from 'utils/messages';
+import { getAxiosClient } from 'utils/axios';
 import { getLogger, measureElapsed } from 'utils';
 import { commandListenerRegister, commandObjTraveler } from 'utils/command';
 import { useDispatch, useSelector } from '@hooks';
@@ -38,6 +39,8 @@ function* callInitApplication() {
   const measure = measureElapsed();
   yield call(commandListenerRegister);
   logger.info(`Preloaded commands`);
+  yield call(getAxiosClient);
+  logger.info(`Preloaded Axios client`);
   yield call(mongooseConnect);
   logger.info(`Connected to mongo`);
   const elapsed = measure();
