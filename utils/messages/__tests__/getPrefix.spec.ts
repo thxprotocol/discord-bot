@@ -12,5 +12,5 @@ test('Initial prefix the same as the value in enviroment', () => {
   });
 
   const prefix = getPrefix();
-  expect(prefix).toBe(OLD_ENV.DEFAULT_PREFIX);
+  expect(prefix).toBe(OLD_ENV.DEFAULT_PREFIX || '');
 });
