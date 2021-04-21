@@ -9,7 +9,7 @@ lib-cov
 *.swp
 
 pids
-logs
+logs/*
 results
 build
 tmp
@@ -24,6 +24,7 @@ coverage
 .env
 
 # Dependency directory
+mongo_data
 node_modules
 bower_components
 

@@ -14,6 +14,7 @@ module.exports = {
   transformIgnorePatterns: ['<rootDir>/node_modules/(?!@foo)'],
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   moduleDirectories: ['node_modules'],
+  testPathIgnorePatterns: ['/test'],
   //
   moduleNameMapper: {
     '^core/(.*?)$': '<rootDir>/core/$1',

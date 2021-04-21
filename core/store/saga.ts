@@ -11,6 +11,7 @@ import {
   spawn,
   put
 } from 'redux-saga/effects';
+import { connect } from 'mongoose';
 import {
   initApplicationSuccess,
   processAsyncCommand,
@@ -26,17 +27,35 @@ import { useDispatch, useSelector } from '@hooks';
 import { selectCommandByName } from './selectors';
 import { Action } from 'redux';
 
+/**
+ * Application starting process
+ * going on here.
+ */
 function* callInitApplication() {
   const logger = getLogger();
+  logger.info(`Initializing..`);
   // Pre-load commands from commands folder
   const measure = measureElapsed();
-  logger.info(`Preloaded commands`);
   yield call(commandListenerRegister);
+  logger.info(`Preloaded commands`);
+  yield call(mongooseConnect);
+  logger.info(`Connected to mongo`);
   const elapsed = measure();
 
   logger.info(`Take ${elapsed}ms to initialize application`);
 
   yield put(initApplicationSuccess());
+}
+
+function* mongooseConnect() {
+  if (!process.env.MONGO_URL) {
+    throw Error('Cannot find MONGO_URL in enviroment variable');
+    return;
+  }
+  yield call(connect as any, process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
 }
 
 /**
