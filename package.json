@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "nodemon",
     "start": "yarn build && node ./dist/index.js",
-    "test": "jest --setupFiles dotenv/config",
+    "test": "jest --setupFiles dotenv/config --detectOpenHandles --forceExit",
     "test:coverage": "jest --setupFiles dotenv/config --detectOpenHandles --coverage",
     "clean": "prettier --config .prettierrc.js '**/*.ts' --write",
     "lint": "eslint . --fix --ignore-path .gitignore",
