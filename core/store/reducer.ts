@@ -5,6 +5,7 @@ import { ApplicationRootState, ApplicationActions } from './types';
 
 const initialRootState: ApplicationRootState = {
   cooldown: {},
+  accessToken: {},
   meta: {
     commands: {},
     defaultPrefix: process.env.DEFAULT_PREFIX || DEFAULT_PREFIX,
@@ -42,6 +43,20 @@ const rootReducer = (
       return produce(state, nextState => {
         nextState.cooldown[userId] = {
           [command]: lastCommandTime
+        };
+      });
+    }
+    //
+    // COOLDOWN CASES
+    //
+    case ActionTypes.UPDATE_ACCESS_TOKEN: {
+      const { clientId, token, expireIn, clientToken } = action.payload;
+
+      return produce(state, nextState => {
+        nextState.accessToken[clientId] = {
+          token,
+          expireIn,
+          clientToken
         };
       });
     }

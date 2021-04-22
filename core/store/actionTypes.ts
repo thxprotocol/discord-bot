@@ -8,7 +8,9 @@ enum ActionTypes {
   RUN_ASYNC_COMMAND = '@core/store/RUN_ASYNC_COMMAND',
   RUN_QUEUED_COMMAND = '@core/store/RUN_QUEUED_COMMAND',
   // Cooldown actions
-  ADD_COOLDOWN = '@core/store/UPDATE_COOLDOWN'
+  ADD_COOLDOWN = '@core/store/UPDATE_COOLDOWN',
+  // Access Token actions
+  UPDATE_ACCESS_TOKEN = '@core/store/UPDATE_ACCESS_TOKEN'
 }
 
 export default ActionTypes;
