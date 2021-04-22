@@ -78,8 +78,8 @@ function* verifyCommand({ payload }: ReturnType<typeof verifyCommandAction>) {
   if (!command.length) return;
   const [commandToRun, params] = commandObjTraveler(commands, splicedCommand);
   const commandMeta = useSelector(selectCommandByName(command));
-
   // Run command /////////////
+
   if (!commandToRun && !commandMeta.name) return;
   if (commandToRun.default && commandToRun.default instanceof Function) {
     const dispatch = useDispatch();

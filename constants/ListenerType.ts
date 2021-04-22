@@ -1,12 +1,16 @@
 enum ListenerType {
   GENERAL = 'GENERAL',
-  DEVELOPER = 'DEVELOPER'
+  BOT_OWNER = 'BOT_OWNER',
+  GUILD_OWNER = 'GUILD_OWNER',
+  GUILD_ADMINS = 'GUILD_ADMINS'
 }
 
 /////////////////////////////
 
 export const ListenerTypeLabel = {
-  [ListenerType.DEVELOPER]: 'Developer only access Commands',
+  [ListenerType.GUILD_OWNER]: 'Guild owner only access command',
+  [ListenerType.GUILD_ADMINS]: 'Guild admins only access command',
+  [ListenerType.BOT_OWNER]: 'Owner only access Commands',
   [ListenerType.GENERAL]: 'General Commands'
 };
 

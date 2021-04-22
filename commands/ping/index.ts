@@ -14,7 +14,7 @@ export default listenerGenerator({
   cooldown: 10,
   queued: false,
   handler: ping,
-  type: ListenerType.GENERAL,
+  type: ListenerType.GUILD_ADMINS,
   helpMessage: 'This command return a pong when you call it (Developer only)',
   usageMessage: 'This command return a pong when you call it (Developer only)'
 });
