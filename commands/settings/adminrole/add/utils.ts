@@ -1,2 +1,2 @@
 export const extractRoleFromMention = (message: string) =>
-  message.replace('<@&', '>');
+  message.replace('<@&', '').replace('>', '');

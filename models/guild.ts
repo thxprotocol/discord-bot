@@ -4,7 +4,7 @@ const GuildSchema: Schema = new Schema({
   id: { type: String, required: true },
   client_id: { type: String },
   client_secrect: { type: String },
-  admin_roles: { type: [Schema.Types.String] }
+  admin_roles: { type: [{ type: String }] }
 });
 
 export default mongoose.model<IGuild>('Guilds', GuildSchema);
