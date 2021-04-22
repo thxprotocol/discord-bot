@@ -45,3 +45,16 @@ export const addCooldown = (
   command: string,
   lastCommandTime: number
 ) => action(ActionTypes.ADD_COOLDOWN, { userId, command, lastCommandTime });
+
+export const updateAccessToken = (
+  clientId: string,
+  clientToken: string,
+  expireIn: number,
+  token: string
+) =>
+  action(ActionTypes.UPDATE_ACCESS_TOKEN, {
+    clientId,
+    clientToken,
+    token,
+    expireIn
+  });

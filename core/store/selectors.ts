@@ -28,3 +28,13 @@ export const cooldownSelector = createSelector(
 
 export const selectCooldownById = (userId: string) =>
   createSelector(cooldownSelector, state => state[userId]);
+
+export const accessTokenSelector = createSelector(
+  rootSelector,
+  state => state.accessToken
+);
+
+export const selectAccessToken = (clientId: string, clientToken: string) =>
+  createSelector(accessTokenSelector, state =>
+    state[clientId]?.clientToken === clientToken ? state.token : undefined
+  );
