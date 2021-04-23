@@ -31,7 +31,6 @@ export const getClientWithAccess = (accessToken: string): AxiosInstance => {
 
   client.interceptors.request.use(function (config) {
     config.headers.Authorization = authorizationPayload;
-    console.log(JSON.stringify(config));
     return config;
   });
 
