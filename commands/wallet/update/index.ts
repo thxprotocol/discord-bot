@@ -5,6 +5,7 @@ import { listenerGenerator } from 'utils/command';
 import ListenerType from 'constants/ListenerType';
 import { failedEmbedGenerator, successEmbedGenerator } from 'utils/embed';
 import { walletRegex } from './constants';
+import { usageGenerate } from 'utils/messages';
 
 const update: CommandHandler = async (message, params) => {
   // Check is a valid wallet
@@ -36,7 +37,13 @@ export default listenerGenerator({
   queued: false,
   handler: update,
   type: ListenerType.GENERAL,
-  validationSchema: Yup.array().min(1),
-  helpMessage: 'Create or Update user wallet',
-  usageMessage: 'Create or Update user wallet'
+  validationSchema: Yup.array().min(1).max(1),
+  helpMessage: 'Create or update user wallet',
+  usageMessage: usageGenerate({
+    name: 'update',
+    desc: 'Create or update user wallet',
+    path: 'wallet update',
+    params: ['address'],
+    example: `wallet update 0x278Ff6d33826D906070eE938CDc9788003749e93`
+  })
 });

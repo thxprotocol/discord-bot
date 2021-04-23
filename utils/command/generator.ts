@@ -11,7 +11,7 @@ import {
 } from 'constants/messages';
 import { addCommandMeta, addCooldown } from 'core/store/actions';
 import { ownerIdSelector, selectCooldownById } from 'core/store/selectors';
-import { PermissionString } from 'discord.js';
+import { MessageEmbed, PermissionString } from 'discord.js';
 import { CommandListener } from 'types';
 import { failedEmbedGenerator } from 'utils/embed';
 import inLast from 'utils/inLast';
@@ -79,15 +79,19 @@ const listenerGenerator: CommandListener = ({
       : true;
 
     // Should apply permission checks
-    const shouldApplyParamsCheck = !validationSchema ? false : paramsValid;
+    const shouldApplyParamsCheck = !!validationSchema;
     const shouldApplyPermissionCheck = !!requiredPermissions.length;
 
     // Check Params
     if (shouldApplyParamsCheck) {
       if (!paramsValid) {
-        return failedEmbedGenerator({
-          description: usageMessage
-        });
+        if (usageMessage instanceof MessageEmbed) {
+          return usageMessage;
+        } else {
+          return failedEmbedGenerator({
+            description: usageMessage
+          });
+        }
       }
     }
 
@@ -155,22 +159,7 @@ const listenerGenerator: CommandListener = ({
         //
         case ListenerType.GENERAL: {
           // Move this to here to save some queries
-          const guildAdminRoleIds = await GuildModel.findOne({
-            id: message.guild?.id
-          });
-          const guildAdminRoles = guildAdminRoleIds?.admin_roles;
-          const userRoles = message.guild?.members.cache
-            .get(message.author.id)
-            ?.roles.cache.array();
-          const isGuildAdmin = !!_.differenceWith(
-            userRoles,
-            guildAdminRoles || [],
-            _.isEqual
-          ).length;
-
           if (
-            !isGuildOwner &&
-            !isGuildAdmin &&
             !isPermissionValid &&
             shouldApplyPermissionCheck &&
             !isFromCorde
@@ -188,9 +177,13 @@ const listenerGenerator: CommandListener = ({
     // Quick return usageMessage or
     // there no command handler
     if (!handler) {
-      return failedEmbedGenerator({
-        description: usageMessage
-      });
+      if (usageMessage instanceof MessageEmbed) {
+        return usageMessage;
+      } else {
+        return failedEmbedGenerator({
+          description: usageMessage
+        });
+      }
     } else {
       // Return timeout if command
       // is used recently.

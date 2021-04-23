@@ -7,7 +7,7 @@ import ListenerType from 'constants/ListenerType';
 import { failedEmbedGenerator, successEmbedGenerator } from 'utils/embed';
 import { CommandHandler } from 'types';
 import { checkAssetPool, getAccessToken } from 'utils/axios';
-import { getPrefix } from 'utils/messages';
+import { getPrefix, usageGenerate } from 'utils/messages';
 import { walletRegex } from 'commands/wallet/update/constants';
 
 const setup: CommandHandler = async message => {
@@ -57,9 +57,16 @@ const setup: CommandHandler = async message => {
       guild.client_id,
       guild.client_secret
     );
+
+    if (!accessToken) {
+      return failedEmbedGenerator({
+        description: 'Invalid Client ID or Client Token, please setup again'
+      });
+    }
+
     const isValid = await checkAssetPool(contractAddress, accessToken);
     if (!isValid) {
-      failedEmbedGenerator({
+      return failedEmbedGenerator({
         description: 'Invalid Contract Address'
       });
     }
@@ -67,7 +74,7 @@ const setup: CommandHandler = async message => {
     // Find and create a channel object it not yet have
     await ChannelSchema.findOneAndUpdate(
       { id: message.channel.id },
-      { pool_address: contractAddress },
+      { pool_address: contractAddress, guild: guild },
       { upsert: true }
     );
 
@@ -82,11 +89,13 @@ const setup: CommandHandler = async message => {
 };
 
 export default listenerGenerator({
-  name: 'setup',
-  cooldown: 10,
+  name: 'assetpool',
   queued: true,
   handler: setup,
   type: ListenerType.GUILD_ADMINS,
-  helpMessage: 'This command return a pong when you call it (Developer only)',
-  usageMessage: 'This command return a pong when you call it (Developer only)'
+  helpMessage: 'Setting up Asset Pool for current Channel',
+  usageMessage: usageGenerate({
+    name: 'assetpool',
+    desc: 'Setting up Asset Pool for current Channel'
+  })
 });
