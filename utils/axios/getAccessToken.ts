@@ -2,11 +2,12 @@ import { useDispatch, useSelector } from '@hooks';
 import { AxiosResponse } from 'axios';
 import { updateAccessToken } from 'core/store/actions';
 import { selectAccessToken } from 'core/store/selectors';
+import { URLSearchParams } from 'url';
 import createClient from './getClient';
 
 const BUFFER_TIME = 100;
 
-const checkExpired = (toCheckTime: number) =>
+export const checkExpired = (toCheckTime: number) =>
   toCheckTime - new Date().getTime() > 0;
 
 /**

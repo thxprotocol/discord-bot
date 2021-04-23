@@ -1,5 +1,4 @@
 {
-  "watch": ["."],
   "ext": "ts,json",
   "ignore": ["**/*.spec.ts"],
   "exec": "ts-node -r tsconfig-paths/register index.ts"

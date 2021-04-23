@@ -21,4 +21,22 @@ const createClient = (clientId: string, clientToken: string): AxiosInstance => {
   return client;
 };
 
+export const createClientWithAccess = (accessToken: string): AxiosInstance => {
+  const authorizationPayload = 'Bearer ' + accessToken;
+
+  const client = axios.create({
+    //60 sec timeout
+    timeout: 60000
+  });
+
+  client.interceptors.request.use(function (config) {
+    config.headers.Authorization = authorizationPayload;
+    config.headers['Content-Type'] = 'application/json';
+
+    return config;
+  });
+
+  return client;
+};
+
 export default createClient;
