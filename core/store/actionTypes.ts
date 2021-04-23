@@ -10,7 +10,10 @@ enum ActionTypes {
   // Cooldown actions
   ADD_COOLDOWN = '@core/store/UPDATE_COOLDOWN',
   // Access Token actions
-  UPDATE_ACCESS_TOKEN = '@core/store/UPDATE_ACCESS_TOKEN'
+  UPDATE_ACCESS_TOKEN = '@core/store/UPDATE_ACCESS_TOKEN',
+  // Channel Actions
+  UPDATE_CHANNEL = '@core/store/UPDATE_CHANNEL',
+  UPDATE_CHANNEL_MEMBER = '@core/store/UPDATE_CHANNEL_MEMBER'
 }
 
 export default ActionTypes;

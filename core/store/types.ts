@@ -8,6 +8,14 @@ export interface AccessToken {
   clientToken: string;
 }
 
+export interface Member {
+  [memberId: string]: boolean;
+}
+export interface Channel {
+  poolAddress: string;
+  members: Member;
+}
+
 /**
  * States
  */
@@ -36,8 +44,13 @@ export interface AccessTokenState {
   [clientId: string]: AccessToken;
 }
 
+export interface ChannelState {
+  [channelId: string]: Channel;
+}
+
 export interface ApplicationRootState {
   meta: MetaDataState;
   cooldown: CooldownState;
   accessToken: AccessTokenState;
+  channels: ChannelState;
 }

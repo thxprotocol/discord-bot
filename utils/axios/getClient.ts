@@ -14,14 +14,14 @@ const createClient = (clientId: string, clientToken: string): AxiosInstance => {
 
   client.interceptors.request.use(function (config) {
     config.headers.Authorization = authorizationPayload;
-
+    config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
     return config;
   });
 
   return client;
 };
 
-export const createClientWithAccess = (accessToken: string): AxiosInstance => {
+export const getClientWithAccess = (accessToken: string): AxiosInstance => {
   const authorizationPayload = 'Bearer ' + accessToken;
 
   const client = axios.create({
@@ -31,8 +31,6 @@ export const createClientWithAccess = (accessToken: string): AxiosInstance => {
 
   client.interceptors.request.use(function (config) {
     config.headers.Authorization = authorizationPayload;
-    config.headers['Content-Type'] = 'application/json';
-
     return config;
   });
 

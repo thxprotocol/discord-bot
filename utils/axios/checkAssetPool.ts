@@ -1,10 +1,10 @@
-import { createClientWithAccess } from './getClient';
+import { getClientWithAccess } from './getClient';
 
 const checkAssetPool = async (
   contractAddress: string,
   accessToken: string
 ): Promise<boolean> => {
-  const axios = createClientWithAccess(accessToken);
+  const axios = getClientWithAccess(accessToken);
 
   try {
     await axios({

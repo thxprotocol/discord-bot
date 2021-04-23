@@ -18,6 +18,11 @@ export const commandMetaSelector = createSelector(
   state => state.commands
 );
 
+export const channelStateSelector = createSelector(
+  rootSelector,
+  state => state.channels
+);
+
 export const selectCommandByName = (commandName: string) =>
   createSelector(commandMetaSelector, state => state[commandName]);
 
@@ -38,3 +43,6 @@ export const selectAccessToken = (clientId: string, clientToken: string) =>
   createSelector(accessTokenSelector, state =>
     state[clientId]?.clientToken === clientToken ? state.token : undefined
   );
+
+export const selectChannelByID = (id: string) =>
+  createSelector(channelStateSelector, state => state[id]);

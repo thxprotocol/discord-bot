@@ -1,5 +1,5 @@
-import { useDispatch, useSelector } from '@hooks';
 import { AxiosResponse } from 'axios';
+import { useDispatch, useSelector } from '@hooks';
 import { updateAccessToken } from 'core/store/actions';
 import { selectAccessToken } from 'core/store/selectors';
 import { URLSearchParams } from 'url';
@@ -24,29 +24,30 @@ const getAccessToken = async (clientId: string, clientToken: string) => {
   const isExpired = previousToken && checkExpired(previousToken.expireIn);
   if (!isExpired && previousToken) return previousToken.token;
 
-  const axios = createClient(clientId, clientToken);
-  const params = new URLSearchParams();
-  params.append('grant_type', 'client_credentials');
-  params.append('scope', 'openid');
-  const response: AccessTokenResponse = await axios({
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    url: 'https://api.thx.network/token',
-    data: params
-  });
-  const currentTime = new Date().getTime() - BUFFER_TIME;
-  const expireTime = currentTime + response.data.expires_in * 1000; // Milisecconds
-  dispatch(
-    updateAccessToken(
-      clientId,
-      clientToken,
-      expireTime,
-      response.data.access_token
-    )
-  );
-  return response.data.access_token;
+  try {
+    const axios = createClient(clientId, clientToken);
+    const params = new URLSearchParams();
+    params.append('grant_type', 'client_credentials');
+    params.append('scope', 'openid admin');
+    const response: AccessTokenResponse = await axios({
+      method: 'POST',
+      url: 'https://api.thx.network/token',
+      data: params
+    });
+    const currentTime = new Date().getTime() - BUFFER_TIME;
+    const expireTime = currentTime + response.data.expires_in * 1000; // Milisecconds
+    dispatch(
+      updateAccessToken(
+        clientId,
+        clientToken,
+        expireTime,
+        response.data.access_token
+      )
+    );
+    return response.data.access_token;
+  } catch {
+    return undefined;
+  }
 };
 
 export default getAccessToken;

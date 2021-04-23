@@ -6,6 +6,7 @@ import { ApplicationRootState, ApplicationActions } from './types';
 const initialRootState: ApplicationRootState = {
   cooldown: {},
   accessToken: {},
+  channels: {},
   meta: {
     commands: {},
     defaultPrefix: process.env.DEFAULT_PREFIX || DEFAULT_PREFIX,
@@ -47,7 +48,7 @@ const rootReducer = (
       });
     }
     //
-    // COOLDOWN CASES
+    // ACCESS TOKEN CASES
     //
     case ActionTypes.UPDATE_ACCESS_TOKEN: {
       const { clientId, token, expireIn, clientToken } = action.payload;
@@ -58,6 +59,24 @@ const rootReducer = (
           expireIn,
           clientToken
         };
+      });
+    }
+    //
+    // CHANNEL CASES
+    //
+    case ActionTypes.UPDATE_CHANNEL: {
+      const { id, data } = action.payload;
+
+      return produce(state, nextState => {
+        nextState.channels[id] = data;
+      });
+    }
+    //
+    case ActionTypes.UPDATE_CHANNEL_MEMBER: {
+      const { channelId, memberId } = action.payload;
+
+      return produce(state, nextState => {
+        nextState.channels[channelId].members[memberId] = true;
       });
     }
     //

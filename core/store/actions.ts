@@ -2,6 +2,7 @@ import { Message } from 'discord.js';
 import { action } from 'typesafe-actions';
 import { CommandHandler, CommandListenerMeta } from 'types';
 import ActionTypes from './actionTypes';
+import { Channel } from './types';
 
 export const initApplication = () => action(ActionTypes.INIT_APPLICATION);
 
@@ -58,3 +59,9 @@ export const updateAccessToken = (
     token,
     expireIn
   });
+
+export const updateChannel = (id: string, data: Channel) =>
+  action(ActionTypes.UPDATE_CHANNEL, { id, data });
+
+export const updateChannelMember = (channelId: string, memberId: string) =>
+  action(ActionTypes.UPDATE_CHANNEL_MEMBER, { channelId, memberId });
