@@ -71,7 +71,7 @@ const setup: CommandHandler = async message => {
     const channels = await Channel.find({ guild });
 
     channels.forEach(async channel => {
-      const reactions = await Reaction.find({ guild });
+      const reactions = await Reaction.find({ channel });
       reactions.forEach(reaction => {
         reaction.delete();
       });

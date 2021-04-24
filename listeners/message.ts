@@ -1,9 +1,8 @@
-import UserModel from 'models/user';
-import GuildModel from 'models/guild';
-import ChannelModel from 'models/channel';
-import { updateChannelMember, verifyCommand } from '@actions';
-import { useDispatch, useSelector } from '@hooks';
-import { selectChannelByID } from 'core/store/selectors';
+import User from 'models/user';
+import Guild from 'models/guild';
+import Channel from 'models/channel';
+import { verifyCommand } from '@actions';
+import { useDispatch } from '@hooks';
 import { Message } from 'discord.js';
 import { checkChannelIsPool } from 'models/channel/utils';
 import { getAccessToken, getClientWithAccess } from 'utils/axios';
@@ -27,22 +26,18 @@ async function onMessage(message: Message): Promise<void> {
   const isCommand = checkMessage(message.content);
   if (!isCommand && message.guild) {
     // Check if a Guild channel linked with a Asset Pool
-    const guild = await GuildModel.findOne({ id: message.guild.id });
+    const guild = await Guild.findOne({ id: message.guild.id });
     const isLinked = await checkChannelIsPool(message.channel.id);
     if (isLinked) {
-      const cachedChannel = useSelector(selectChannelByID(message.channel.id));
-      const currentUser = await UserModel.findOne({
+      const currentUser = await User.findOne({
         uuid: message.author.id
       });
       if (!currentUser || !currentUser.public_address) return;
-      const isNotAMember =
-        cachedChannel.members[currentUser.public_address] === undefined;
-      console.log(
-        isNotAMember,
-        JSON.stringify(cachedChannel),
-        currentUser.public_address
-      );
-      if (isNotAMember) {
+      const channel = await Channel.findOne({
+        id: message.channel.id
+      });
+      const isMember = channel?.members.includes(currentUser.public_address);
+      if (!isMember) {
         const accessToken = await getAccessToken(
           guild?.client_id || '',
           guild?.client_secret || ''
@@ -58,19 +53,16 @@ async function onMessage(message: Message): Promise<void> {
             method: 'POST',
             url: 'https://api.thx.network/v1/members',
             headers: {
-              AssetPool: cachedChannel.poolAddress
+              AssetPool: channel?.pool_address
             },
             data: params
           });
 
-          const remoteChannel = await ChannelModel.findOne({
+          const remoteChannel = await Channel.findOne({
             id: message.channel.id
           });
 
           remoteChannel?.members.push(currentUser.public_address);
-          dispatch(
-            updateChannelMember(message.channel.id, currentUser.public_address)
-          );
           remoteChannel?.save();
 
           message.author.send(

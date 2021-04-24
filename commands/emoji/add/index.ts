@@ -17,8 +17,6 @@ import {
 import { getClientWithAccess } from 'utils/axios/getClient';
 import { getAccessToken } from 'utils/axios';
 import { RewardResponse } from './types';
-import { useDispatch } from '@hooks';
-import { deleteCachedChannel } from 'core/store/actions';
 import { getReactionString } from './utils';
 
 const setup: CommandHandler = async message => {
@@ -175,9 +173,6 @@ const setup: CommandHandler = async message => {
   );
 
   // Cleaning up
-  const dispatch = useDispatch();
-  dispatch(deleteCachedChannel(channel.id));
-
   return successEmbedGenerator({
     description: 'Successfully link a reward to this reaction'
   });

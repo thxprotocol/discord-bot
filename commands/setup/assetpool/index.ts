@@ -10,8 +10,6 @@ import { CommandHandler } from 'types';
 import { checkAssetPool, getAccessToken } from 'utils/axios';
 import { getPrefix, usageGenerate } from 'utils/messages';
 import { walletRegex } from 'commands/wallet/update/constants';
-import { deleteCachedChannel } from 'core/store/actions';
-import { useDispatch } from '@hooks';
 
 const setup: CommandHandler = async message => {
   // Check if Client ID and Client Secrect
@@ -80,10 +78,6 @@ const setup: CommandHandler = async message => {
       { pool_address: contractAddress, guild: guild, members: [] },
       { upsert: true }
     );
-
-    // Cleaning up
-    const dispatch = useDispatch();
-    dispatch(deleteCachedChannel(message.channel.id));
 
     // Delete old reactions linked
     // with the old Asset Pool
