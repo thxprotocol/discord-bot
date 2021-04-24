@@ -68,15 +68,25 @@ const rootReducer = (
       const { id, data } = action.payload;
 
       return produce(state, nextState => {
-        nextState.channels[id] = data;
+        nextState.channels[id] = {
+          ...(nextState.channels[id] || {}),
+          ...data
+        };
       });
     }
     //
     case ActionTypes.UPDATE_CHANNEL_MEMBER: {
-      const { channelId, memberId } = action.payload;
+      const { channelId, memberId, address } = action.payload;
 
       return produce(state, nextState => {
-        nextState.channels[channelId].members[memberId] = true;
+        nextState.channels[channelId].members[memberId] = address;
+      });
+    }
+    //
+    case ActionTypes.DELETE_CACHED_CHANNEL: {
+      const { channelId } = action.payload;
+      return produce(state, nextState => {
+        delete nextState.channels[channelId];
       });
     }
     //

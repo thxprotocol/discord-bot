@@ -17,6 +17,9 @@ import {
 import { getClientWithAccess } from 'utils/axios/getClient';
 import { getAccessToken } from 'utils/axios';
 import { RewardResponse } from './types';
+import { useDispatch } from '@hooks';
+import { deleteCachedChannel } from 'core/store/actions';
+import { getReactionString } from './utils';
 
 const setup: CommandHandler = async message => {
   // Check if Client ID and Client Secrect
@@ -171,23 +174,20 @@ const setup: CommandHandler = async message => {
     { upsert: true }
   );
 
+  // Cleaning up
+  const dispatch = useDispatch();
+  dispatch(deleteCachedChannel(channel.id));
+
   return successEmbedGenerator({
     description: 'Successfully link a reward to this reaction'
   });
 };
 
 export default listenerGenerator({
-  name: 'link',
+  name: 'add',
   queued: true,
   handler: setup,
   type: ListenerType.GUILD_ADMINS,
-  helpMessage: 'Link a reward with a emoji',
-  usageMessage: 'Link a reward with a emoji'
+  helpMessage: 'Add a reward with a emoji',
+  usageMessage: 'Add a reward with a emoji'
 });
-
-function getReactionString(
-  isNormalEmoji: RegExpExecArray | null,
-  isDiscordEmoji: RegExpExecArray | null
-) {
-  return isNormalEmoji?.[1] || (isDiscordEmoji || []).filter(item => !!item)[1];
-}

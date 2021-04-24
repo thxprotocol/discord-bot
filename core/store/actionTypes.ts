@@ -13,7 +13,8 @@ enum ActionTypes {
   UPDATE_ACCESS_TOKEN = '@core/store/UPDATE_ACCESS_TOKEN',
   // Channel Actions
   UPDATE_CHANNEL = '@core/store/UPDATE_CHANNEL',
-  UPDATE_CHANNEL_MEMBER = '@core/store/UPDATE_CHANNEL_MEMBER'
+  UPDATE_CHANNEL_MEMBER = '@core/store/UPDATE_CHANNEL_MEMBER',
+  DELETE_CACHED_CHANNEL = '@core/store/DELETE_CHANNEL'
 }
 
 export default ActionTypes;

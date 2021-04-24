@@ -63,5 +63,12 @@ export const updateAccessToken = (
 export const updateChannel = (id: string, data: Channel) =>
   action(ActionTypes.UPDATE_CHANNEL, { id, data });
 
-export const updateChannelMember = (channelId: string, memberId: string) =>
-  action(ActionTypes.UPDATE_CHANNEL_MEMBER, { channelId, memberId });
+export const updateChannelMember = (
+  channelId: string,
+  memberId: string,
+  address: string
+) =>
+  action(ActionTypes.UPDATE_CHANNEL_MEMBER, { channelId, memberId, address });
+
+export const deleteCachedChannel = (channelId: string) =>
+  action(ActionTypes.DELETE_CACHED_CHANNEL, { channelId });
