@@ -11,6 +11,7 @@ import { checkFromSelf, checkMessage } from '../utils/messages';
 import { getLogger } from 'utils/logger';
 
 async function onMessage(message: Message): Promise<void> {
+  const logger = getLogger();
   const dispatch = useDispatch();
   // Return if message from itself
   const isFromSelf = checkFromSelf(message.author.id);
@@ -22,19 +23,21 @@ async function onMessage(message: Message): Promise<void> {
   const isFromBot = isFromCorde ? false : message.author.bot;
   if (isFromBot) return;
 
-  // Check if a Guild channel linked with a Asset Pool
-  if (message.guild) {
+  // Check if this is a command
+  const isCommand = checkMessage(message.content);
+  if (!isCommand && message.guild) {
+    // Check if a Guild channel linked with a Asset Pool
     const guild = await GuildModel.findOne({ id: message.guild.id });
     const isLinked = await checkChannelIsPool(message.channel.id);
     if (isLinked) {
       const cachedChannel = useSelector(selectChannelByID(message.channel.id));
-      const currentUser = await UserModel.findOne({ uuid: message.author.id });
-      if (!currentUser) return;
-      const isNotAMember = cachedChannel.members[currentUser.public_address];
-
+      const currentUser = await UserModel.findOne({
+        uuid: message.author.id
+      });
+      if (!currentUser || !currentUser.public_address) return;
+      const isNotAMember =
+        cachedChannel.members[currentUser.public_address] === undefined;
       if (isNotAMember) {
-        if (!currentUser || !currentUser?.public_address) return; // What to do with this users?
-
         const accessToken = await getAccessToken(
           guild?.client_id || '',
           guild?.client_secret || ''
@@ -73,19 +76,14 @@ async function onMessage(message: Message): Promise<void> {
             'Successfully connected your wallet to a Asset Pool'
           );
         } catch (error) {
-          const logger = getLogger();
           logger.error(error);
         }
       }
     }
+  } else {
+    // Dispatch command
+    dispatch(verifyCommand(message));
   }
-
-  // Check if this is a command
-  const isCommand = checkMessage(message.content);
-  if (!isCommand) return;
-
-  // Dispatch command
-  dispatch(verifyCommand(message));
 }
 
 export default onMessage;
