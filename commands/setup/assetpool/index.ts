@@ -1,5 +1,6 @@
-import GuildChema from 'models/guild';
-import ChannelSchema from 'models/channel';
+import Guild from 'models/guild';
+import Channel from 'models/channel';
+import Reaction from 'models/reaction';
 import { DMChannel, TextChannel } from 'discord.js';
 import promter from 'discordjs-prompter';
 import { listenerGenerator } from 'utils/command';
@@ -9,12 +10,14 @@ import { CommandHandler } from 'types';
 import { checkAssetPool, getAccessToken } from 'utils/axios';
 import { getPrefix, usageGenerate } from 'utils/messages';
 import { walletRegex } from 'commands/wallet/update/constants';
+import { deleteCachedChannel } from 'core/store/actions';
+import { useDispatch } from '@hooks';
 
 const setup: CommandHandler = async message => {
   // Check if Client ID and Client Secrect
   // is setted up
 
-  const guild = await GuildChema.findOne({
+  const guild = await Guild.findOne({
     id: message.guild?.id
   });
 
@@ -72,12 +75,21 @@ const setup: CommandHandler = async message => {
     }
 
     // Find and create a channel object it not yet have
-    await ChannelSchema.findOneAndUpdate(
+    const channel = await Channel.findOneAndUpdate(
       { id: message.channel.id },
-      { pool_address: contractAddress, guild: guild },
+      { pool_address: contractAddress, guild: guild, members: [] },
       { upsert: true }
     );
 
+    // Cleaning up
+    const dispatch = useDispatch();
+    dispatch(deleteCachedChannel(message.channel.id));
+
+    // Delete old reactions linked
+    // with the old Asset Pool
+    if (channel) {
+      await Reaction.deleteMany({ channel: channel });
+    }
     return successEmbedGenerator({
       description: `Successfully update asset pool for this channel`
     });

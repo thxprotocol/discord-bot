@@ -27,12 +27,13 @@ async function onMessage(message: Message): Promise<void> {
     const guild = await GuildModel.findOne({ id: message.guild.id });
     const isLinked = await checkChannelIsPool(message.channel.id);
     if (isLinked) {
-      const channel = useSelector(selectChannelByID(message.channel.id));
-      const isNotAMember = channel.members[message.author.id] === undefined;
+      const cachedChannel = useSelector(selectChannelByID(message.channel.id));
+      const currentUser = await UserModel.findOne({ uuid: message.author.id });
+      if (!currentUser) return;
+      const isNotAMember = cachedChannel.members[currentUser.public_address];
 
       if (isNotAMember) {
-        const user = await UserModel.findOne({ uuid: message.author.id });
-        if (!user || !user?.public_address) return; // What to do with this users?
+        if (!currentUser || !currentUser?.public_address) return; // What to do with this users?
 
         const accessToken = await getAccessToken(
           guild?.client_id || '',
@@ -43,24 +44,30 @@ async function onMessage(message: Message): Promise<void> {
 
         try {
           const params = new URLSearchParams();
-          params.append('address', user.public_address);
+          params.append('address', currentUser.public_address);
 
           await axios({
             method: 'POST',
             url: 'https://api.thx.network/v1/members',
             headers: {
-              AssetPool: channel.poolAddress
+              AssetPool: cachedChannel.poolAddress
             },
             data: params
           });
 
-          const mongoChannel = await ChannelModel.findOne({
+          const remoteChannel = await ChannelModel.findOne({
             id: message.channel.id
           });
 
-          mongoChannel?.members.push(message.author.id);
-          dispatch(updateChannelMember(message.channel.id, message.author.id));
-          mongoChannel?.save();
+          remoteChannel?.members.push(currentUser.public_address);
+          dispatch(
+            updateChannelMember(
+              message.channel.id,
+              message.author.id,
+              currentUser.public_address
+            )
+          );
+          remoteChannel?.save();
 
           message.author.send(
             'Successfully connected your wallet to a Asset Pool'

@@ -9,10 +9,15 @@ export interface AccessToken {
 }
 
 export interface Member {
-  [memberId: string]: boolean;
+  [memberId: string]: string;
+}
+
+export interface Reaction {
+  [reactionId: string]: string;
 }
 export interface Channel {
   poolAddress: string;
+  reactions: Reaction;
   members: Member;
 }
 

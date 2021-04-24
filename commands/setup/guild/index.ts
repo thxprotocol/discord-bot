@@ -1,4 +1,6 @@
-import GuildChema from 'models/guild';
+import Reaction from 'models/reaction';
+import Channel from 'models/channel';
+import Guild from 'models/guild';
 import { DMChannel, TextChannel } from 'discord.js';
 import promter from 'discordjs-prompter';
 import { listenerGenerator } from 'utils/command';
@@ -58,10 +60,24 @@ const setup: CommandHandler = async message => {
   // Try to get access token from user inputs
   try {
     await getAccessToken(clientId, clientToken);
-    await GuildChema.updateOne(
+    const guild = await Guild.findOneAndUpdate(
       { id: message.guild?.id },
-      { client_id: clientId, client_secret: clientToken }
+      { client_id: clientId, client_secret: clientToken },
+      { upsert: true }
     );
+    // Reset reactions and channel linked to previous Pool address
+    if (!guild) return; // This just for TS not raise type error
+
+    const channels = await Channel.find({ guild });
+
+    channels.forEach(async channel => {
+      const reactions = await Reaction.find({ guild });
+      reactions.forEach(reaction => {
+        reaction.delete();
+      });
+      channel.delete();
+    });
+
     return successEmbedGenerator({
       description: `Successfully setup Client ID and Token for your server`
     });
