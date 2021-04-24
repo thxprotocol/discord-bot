@@ -37,6 +37,11 @@ async function onMessage(message: Message): Promise<void> {
       if (!currentUser || !currentUser.public_address) return;
       const isNotAMember =
         cachedChannel.members[currentUser.public_address] === undefined;
+      console.log(
+        isNotAMember,
+        JSON.stringify(cachedChannel),
+        currentUser.public_address
+      );
       if (isNotAMember) {
         const accessToken = await getAccessToken(
           guild?.client_id || '',
@@ -64,11 +69,7 @@ async function onMessage(message: Message): Promise<void> {
 
           remoteChannel?.members.push(currentUser.public_address);
           dispatch(
-            updateChannelMember(
-              message.channel.id,
-              message.author.id,
-              currentUser.public_address
-            )
+            updateChannelMember(message.channel.id, currentUser.public_address)
           );
           remoteChannel?.save();
 

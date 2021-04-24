@@ -9,7 +9,7 @@ export interface AccessToken {
 }
 
 export interface Member {
-  [memberId: string]: string;
+  [address: string]: boolean;
 }
 
 export interface Reaction {

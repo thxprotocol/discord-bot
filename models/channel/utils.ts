@@ -23,7 +23,7 @@ export const checkChannelIsPool = async (channelId: string) => {
 
   const newMembers: Channel['members'] = {};
   channel.members.forEach(member => {
-    newMembers[member] = member;
+    newMembers[member] = true;
   });
 
   dispatch(

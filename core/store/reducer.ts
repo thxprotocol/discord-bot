@@ -76,10 +76,10 @@ const rootReducer = (
     }
     //
     case ActionTypes.UPDATE_CHANNEL_MEMBER: {
-      const { channelId, memberId, address } = action.payload;
+      const { channelId, address } = action.payload;
 
       return produce(state, nextState => {
-        nextState.channels[channelId].members[memberId] = address;
+        nextState.channels[channelId].members[address] = true;
       });
     }
     //
