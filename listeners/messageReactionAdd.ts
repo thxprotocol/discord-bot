@@ -1,4 +1,4 @@
-import { MessageReaction } from 'discord.js';
+import { MessageReaction, PartialUser, User as DiscordUser } from 'discord.js';
 import Channel from 'models/channel';
 import Reaction from 'models/reaction';
 import Guild from 'models/guild';
@@ -12,10 +12,14 @@ import { checkChannelIsPool } from 'models/channel/utils';
 import { getAccessToken, getClientWithAccess } from 'utils/axios';
 import { getLogger } from 'utils/logger';
 
-const onReactionAdd = async (reaction: MessageReaction) => {
+const onReactionAdd = async (
+  reaction: MessageReaction,
+  user: DiscordUser | PartialUser
+) => {
   if (reaction.message.guild) {
     const isLinked = await checkChannelIsPool(reaction.message.channel.id);
-    if (isLinked) {
+    const isOwner = reaction.message.author.id === user.id;
+    if (isLinked && !isOwner) {
       const channel = await Channel.findOne({
         id: reaction.message.channel.id
       });
