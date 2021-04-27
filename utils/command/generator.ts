@@ -190,7 +190,11 @@ const generator: CommandListener = ({
       const cooldownChecker = inLast(cooldown);
       const userCooldown = useSelector(selectCooldownById(message.author.id));
       const lastTimeCommandUsed = userCooldown?.[name];
-      if (lastTimeCommandUsed && cooldownChecker(lastTimeCommandUsed)) {
+      if (
+        !isFromCorde &&
+        lastTimeCommandUsed &&
+        cooldownChecker(lastTimeCommandUsed)
+      ) {
         //////////////////////
         const timeRemain = (
           cooldown -

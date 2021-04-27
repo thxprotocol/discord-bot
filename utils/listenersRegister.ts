@@ -1,8 +1,10 @@
 import path from 'path';
 import { Client } from 'discord.js';
 import { getFileNames, getModules, readDir } from 'utils';
+import { getLogger } from './logger';
 
 function listenersRegister(client: Client, listenersPath: string): void {
+  const logger = getLogger();
   const fileList = readDir(listenersPath);
   const fileNames = getFileNames(fileList);
   const eventHandlers = readDir(listenersPath).map(file => {
@@ -11,7 +13,13 @@ function listenersRegister(client: Client, listenersPath: string): void {
   });
 
   fileNames.forEach((name, index) => {
-    client.on(name, eventHandlers[index]);
+    client.on(name, (...args) => {
+      try {
+        eventHandlers[index](...args);
+      } catch (err) {
+        logger.error(err.message);
+      }
+    });
   });
 }
 
