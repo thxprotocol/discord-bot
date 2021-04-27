@@ -7,10 +7,8 @@ import { Message } from 'discord.js';
 import { checkChannelIsPool } from 'models/channel/utils';
 import { getAccessToken, getClientWithAccess } from 'utils/axios';
 import { checkFromSelf, checkMessage } from '../utils/messages';
-import { getLogger } from 'utils/logger';
 
 async function onMessage(message: Message): Promise<void> {
-  const logger = getLogger();
   const dispatch = useDispatch();
   // Return if message from itself
   const isFromSelf = checkFromSelf(message.author.id);
@@ -38,14 +36,14 @@ async function onMessage(message: Message): Promise<void> {
       });
       const isMember = channel?.members.includes(currentUser.public_address);
       if (!isMember) {
-        const accessToken = await getAccessToken(
-          guild?.client_id || '',
-          guild?.client_secret || ''
-        );
-        if (!accessToken) return;
-        const axios = getClientWithAccess(accessToken);
-
         try {
+          const accessToken = await getAccessToken(
+            guild?.client_id || '',
+            guild?.client_secret || ''
+          );
+          if (!accessToken) return;
+          const axios = getClientWithAccess(accessToken);
+
           const params = new URLSearchParams();
           params.append('address', currentUser.public_address);
 
@@ -58,18 +56,20 @@ async function onMessage(message: Message): Promise<void> {
             data: params
           });
 
-          const remoteChannel = await Channel.findOne({
-            id: message.channel.id
-          });
-
-          remoteChannel?.members.push(currentUser.public_address);
-          remoteChannel?.save();
+          channel?.members.push(currentUser.public_address);
+          channel?.save();
 
           message.author.send(
             'Successfully connected your wallet to a Asset Pool'
           );
         } catch (error) {
-          logger.error(error);
+          const errorMessage = error.response.data.error?.message;
+          if (errorMessage === 'Address is member already.') {
+            channel?.members.push(currentUser.public_address);
+            channel?.save();
+          } else {
+            throw error;
+          }
         }
       }
     }

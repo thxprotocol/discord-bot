@@ -20,7 +20,6 @@ import { RewardResponse } from './types';
 import { getReactionString } from './utils';
 
 const setup: CommandHandler = async message => {
-  // Check if Client ID and Client Secrect
   // is setted up
   const channel = await ChannelSchema.findOne({
     id: message.channel.id
@@ -146,7 +145,7 @@ const setup: CommandHandler = async message => {
     });
   }
 
-  // Createing Reward
+  // Creating Reward
   const reactionString = getReactionString(isNormalEmoji, isDiscordEmoji);
   const axios = getClientWithAccess(accessToken);
   const params = new URLSearchParams();
@@ -160,6 +159,15 @@ const setup: CommandHandler = async message => {
       AssetPool: channel.pool_address
     },
     data: params
+  });
+
+  // Activate Reward
+  await axios({
+    method: 'POST',
+    url: `https://api.thx.network/v1/rewards/${rewardResponse.data.id}/poll/finalize`,
+    headers: {
+      AssetPool: channel.pool_address
+    }
   });
 
   await ReactionSchema.findOneAndUpdate(
@@ -177,7 +185,6 @@ const setup: CommandHandler = async message => {
     description: 'Successfully link a reward to this reaction'
   });
 };
-
 export default listenerGenerator({
   name: 'add',
   queued: true,

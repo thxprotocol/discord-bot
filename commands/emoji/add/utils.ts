@@ -2,5 +2,7 @@ export function getReactionString(
   isNormalEmoji: RegExpExecArray | null,
   isDiscordEmoji: RegExpExecArray | null
 ) {
-  return isNormalEmoji?.[0] || (isDiscordEmoji || []).filter(item => !!item)[1];
+  const reaction =
+    isNormalEmoji?.[0] || (isDiscordEmoji || []).filter(item => !!item)[1];
+  return encodeURI(reaction);
 }

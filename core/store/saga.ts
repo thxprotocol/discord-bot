@@ -11,7 +11,7 @@ import {
   spawn,
   put
 } from 'redux-saga/effects';
-import { connect } from 'mongoose';
+import { set, connect } from 'mongoose';
 import {
   initApplicationSuccess,
   processAsyncCommand,
@@ -50,8 +50,9 @@ function* callInitApplication() {
 function* mongooseConnect() {
   if (!process.env.MONGO_URL) {
     throw Error('Cannot find MONGO_URL in enviroment variable');
-    return;
   }
+  yield call(set as any, 'useCreateIndex', true);
+  yield call(set as any, 'useFindAndModify', false);
   yield call(connect as any, process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true

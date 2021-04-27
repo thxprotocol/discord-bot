@@ -11,7 +11,7 @@ export default () => {
     },
     error: (message: string) => {
       const now = moment().format('DD-MM-YYYY');
-      log.info(now, message);
+      log.error(now, message);
       writeLogToFile();
     },
     records: log.record

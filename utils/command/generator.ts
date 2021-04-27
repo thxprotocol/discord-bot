@@ -25,7 +25,7 @@ const getCurrentLocation = () => {
   return match?.[1] || '';
 };
 
-const listenerGenerator: CommandListener = ({
+const generator: CommandListener = ({
   name,
   type,
   handler,
@@ -190,7 +190,7 @@ const listenerGenerator: CommandListener = ({
       const cooldownChecker = inLast(cooldown);
       const userCooldown = useSelector(selectCooldownById(message.author.id));
       const lastTimeCommandUsed = userCooldown?.[name];
-      if (lastTimeCommandUsed && !cooldownChecker(lastTimeCommandUsed)) {
+      if (lastTimeCommandUsed && cooldownChecker(lastTimeCommandUsed)) {
         //////////////////////
         const timeRemain = (
           cooldown -
@@ -210,6 +210,8 @@ const listenerGenerator: CommandListener = ({
         return result;
       } catch (error) {
         const logger = getLogger();
+        console.log(JSON.stringify(error), 'generator');
+        console.log(JSON.stringify(error.response?.data));
         logger.error(error.message);
         return failedEmbedGenerator({
           description: DEFAULT_EXECUTION_ERROR_MESSAGE
@@ -219,4 +221,4 @@ const listenerGenerator: CommandListener = ({
   };
 };
 
-export default listenerGenerator;
+export default generator;

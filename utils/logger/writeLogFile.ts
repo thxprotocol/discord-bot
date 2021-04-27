@@ -1,9 +1,10 @@
 import fs from 'fs';
 import moment from 'moment';
-import getLogger from './getLogger';
+import { MessageObject } from 'npmlog';
 import getStaticPath from 'utils/getStaticPath';
+import getLogger from './getLogger';
 
-const writeLogToFile = () => {
+const writeNewLog = () => {
   const logger = getLogger();
   const logStaticPath = getStaticPath(`logs`);
   const logFileName = `${moment().format('DD-MM-YYYY')}.txt`;
@@ -12,11 +13,17 @@ const writeLogToFile = () => {
     fs.mkdirSync(logStaticPath);
   }
 
-  logger.records.forEach(log => {
-    fs.writeFileSync(logStaticPath + '/' + logFileName, log.message + '\n', {
+  fs.writeFileSync(
+    logStaticPath + '/' + logFileName,
+    formatLogMessage(logger.records[logger.records.length - 1]),
+    {
       flag: 'a+'
-    });
-  });
+    }
+  );
 };
 
-export default writeLogToFile;
+export default writeNewLog;
+
+const formatLogMessage = (record: MessageObject) => {
+  return `${record.level} ${record.prefix} ${record.message}\n`;
+};

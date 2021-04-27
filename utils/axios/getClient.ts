@@ -31,6 +31,7 @@ export const getClientWithAccess = (accessToken: string): AxiosInstance => {
 
   client.interceptors.request.use(function (config) {
     config.headers.Authorization = authorizationPayload;
+    config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
     return config;
   });
 

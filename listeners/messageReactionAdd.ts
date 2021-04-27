@@ -17,8 +17,10 @@ const onReactionAdd = async (
   user: DiscordUser | PartialUser
 ) => {
   if (reaction.message.guild) {
+    const logger = getLogger();
+    await reaction.message.fetch();
     const isLinked = await checkChannelIsPool(reaction.message.channel.id);
-    const isOwner = reaction.message.author.id === user.id;
+    const isOwner = false;
     if (isLinked && !isOwner) {
       const channel = await Channel.findOne({
         id: reaction.message.channel.id
@@ -40,33 +42,35 @@ const onReactionAdd = async (
       // Conditional syntax just to fix TS
       // Errors. since much have 2 of this
       // before can goes here
-      await reaction.message.fetch();
       // Fetch info again incase this message
       // not yet cached by the bot
-      const postOwner = await User.findOne({
+      const author = await User.findOne({
         uuid: reaction.message.author.id
       });
-      if (!postOwner || !postOwner.public_address) return;
+      if (!author || !author.public_address) return;
+      console.log(author.public_address, reward.reward_id);
       const accessToken = await getAccessToken(
         guild.client_id,
         guild.client_secret
       );
       const axios = getClientWithAccess(accessToken || '');
       const params = new URLSearchParams();
-      params.append('member', postOwner.public_address);
+      params.append('member', author.public_address);
       try {
         await axios({
           method: 'POST',
-          url: `https://api.thx.network/v1/rewards/${reward}/give`,
+          url: `https://api.thx.network/v1/rewards/${reward.reward_id}/give`,
           headers: {
             AssetPool: channel.pool_address
           },
           data: params
         });
-      } catch {
-        const logger = getLogger();
+        logger.info(
+          `Successfully sended a reward with id ${reward.reward_id} in ${channel.pool_address} to ${author.public_address}`
+        );
+      } catch (error) {
         logger.error(
-          `Cannot give reward to user with UUID: ${reaction.message.author.id}`
+          `Failed to send a reward with id ${reward.reward_id} in ${channel.pool_address} to ${author.public_address}`
         );
       }
     }
