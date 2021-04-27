@@ -68,7 +68,7 @@ const setup: CommandHandler = async message => {
 
   if (!guild?.client_id || !guild?.client_secret) {
     return failedEmbedGenerator({
-      description: `To do this, please setup Client ID and Client Token for your Guild first by: \`${getPrefix()}setup\` command`
+      description: `To do this, please setup Client ID and Client Token for your Guild first by: \`${getPrefix()}setup guild\` command`
     });
   }
 

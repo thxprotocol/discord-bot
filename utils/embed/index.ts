@@ -4,7 +4,8 @@ import Colors from 'constants/Colors';
 const embedGenerator = (
   data: MessageEmbed | MessageEmbedOptions
 ): MessageEmbed => {
-  return new MessageEmbed(data);
+  const embed = new MessageEmbed(data);
+  return embed;
 };
 
 export const successEmbedGenerator = (

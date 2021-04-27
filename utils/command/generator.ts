@@ -210,8 +210,6 @@ const generator: CommandListener = ({
         return result;
       } catch (error) {
         const logger = getLogger();
-        console.log(JSON.stringify(error), 'generator');
-        console.log(JSON.stringify(error.response?.data));
         logger.error(error.message);
         return failedEmbedGenerator({
           description: DEFAULT_EXECUTION_ERROR_MESSAGE

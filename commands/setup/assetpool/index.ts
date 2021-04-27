@@ -85,7 +85,8 @@ const setup: CommandHandler = async message => {
       await Reaction.deleteMany({ channel: channel });
     }
     return successEmbedGenerator({
-      description: `Successfully update asset pool for this channel`
+      title: `Successfully update asset pool for this channel`,
+      description: `Now you can continue on linking rewards and emoji by command: \`${getPrefix()}emoji add\``
     });
   } catch {
     return failedEmbedGenerator({
@@ -99,9 +100,9 @@ export default listenerGenerator({
   queued: true,
   handler: setup,
   type: ListenerType.GUILD_ADMINS,
-  helpMessage: 'Setting up Asset Pool for current Channel',
+  helpMessage: 'Setting up Asset Pool in Current Channel',
   usageMessage: usageGenerate({
     name: 'assetpool',
-    desc: 'Setting up Asset Pool for current Channel'
+    desc: 'Setting up Asset Pool in Current Channel'
   })
 });

@@ -11,6 +11,9 @@ import {
 import { checkChannelIsPool } from 'models/channel/utils';
 import { getAccessToken, getClientWithAccess } from 'utils/axios';
 import { getLogger } from 'utils/logger';
+import getDMChannelByUserId from 'utils/getDMChannelByUserId';
+import getWalletLink from 'utils/getWalletLink';
+import { successEmbedGenerator } from 'utils/embed';
 
 const onReactionAdd = async (
   reaction: MessageReaction,
@@ -48,7 +51,6 @@ const onReactionAdd = async (
         uuid: reaction.message.author.id
       });
       if (!author || !author.public_address) return;
-      console.log(author.public_address, reward.reward_id);
       const accessToken = await getAccessToken(
         guild.client_id,
         guild.client_secret
@@ -65,6 +67,24 @@ const onReactionAdd = async (
           },
           data: params
         });
+
+        const contractLink = getWalletLink(channel.pool_address);
+
+        // Notify post owner
+        const authorChannel = await getDMChannelByUserId(
+          reaction.message.author.id
+        );
+
+        const successMessage = successEmbedGenerator({
+          title: 'You got a new reward!',
+          description: 'Now you can claim it by click the link above',
+          url: contractLink
+        });
+
+        authorChannel.send(successMessage);
+
+        // Log infomations
+
         logger.info(
           `Successfully sended a reward with id ${reward.reward_id} in ${channel.pool_address} to ${author.public_address}`
         );

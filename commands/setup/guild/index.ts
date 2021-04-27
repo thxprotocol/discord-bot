@@ -94,6 +94,6 @@ export default listenerGenerator({
   queued: false,
   handler: setup,
   type: ListenerType.GUILD_ADMINS,
-  helpMessage: 'This command return a pong when you call it (Developer only)',
-  usageMessage: 'This command return a pong when you call it (Developer only)'
+  helpMessage: 'Setting up basic settings for Guild',
+  usageMessage: 'Setting up basic settings for Guild'
 });
