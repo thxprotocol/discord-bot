@@ -4,9 +4,10 @@ import getPrefix from './getPrefix';
 interface Props {
   name: string;
   desc: string;
+  childs?: string[];
   params?: string[];
-  path?: string;
   example?: string;
+  path?: string;
 }
 
 const paramsFormatter = (params: string[]) =>

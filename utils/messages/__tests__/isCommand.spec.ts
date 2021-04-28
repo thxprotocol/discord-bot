@@ -6,4 +6,7 @@ test('Check command is checked correctly', () => {
   const fakeCommand = 'test';
   expect(isCommand(prefix + fakeCommand)).toBe(true);
   expect(isCommand(fakeCommand)).toBe(false);
+  expect(() => isCommand(prefix + fakeCommand, '')).toThrow(
+    Error('No prefix setted')
+  );
 });

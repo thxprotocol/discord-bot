@@ -31,7 +31,6 @@ const add: CommandHandler = async (message, params) => {
 
 export default listenerGenerator({
   name: 'add',
-  cooldown: 10,
   queued: true,
   handler: add,
   type: ListenerType.GENERAL,

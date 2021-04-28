@@ -24,7 +24,7 @@ const update: CommandHandler = async (message, params) => {
       description: 'Successfully link your wallet'
     });
   } else {
-    await user.update({ public_address: params[0] });
+    await user.updateOne({ public_address: params[0] });
     return successEmbedGenerator({
       description: 'Successfully link your wallet'
     });

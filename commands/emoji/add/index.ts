@@ -19,7 +19,7 @@ import { getAccessToken } from 'utils/axios';
 import { RewardResponse } from './types';
 import { getReactionString } from './utils';
 
-const setup: CommandHandler = async message => {
+const add: CommandHandler = async message => {
   // is setted up
   const channel = await ChannelSchema.findOne({
     id: message.channel.id
@@ -188,7 +188,7 @@ const setup: CommandHandler = async message => {
 export default listenerGenerator({
   name: 'add',
   queued: true,
-  handler: setup,
+  handler: add,
   type: ListenerType.GUILD_ADMINS,
   helpMessage: 'Add a reward with a emoji',
   usageMessage: 'Add a reward with a emoji'

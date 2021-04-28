@@ -12,9 +12,9 @@ module.exports = {
   },
   modulePathIgnorePatterns: ['dist'],
   transformIgnorePatterns: ['<rootDir>/node_modules/(?!@foo)'],
+  testPathIgnorePatterns: ['/test', '/commands', '/errors', '/listeners'],
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   moduleDirectories: ['node_modules'],
-  testPathIgnorePatterns: ['/test'],
   //
   moduleNameMapper: {
     '^core/(.*?)$': '<rootDir>/core/$1',
