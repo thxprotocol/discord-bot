@@ -57,7 +57,7 @@ const onReactionAdd = async (
       const cachedReaction = await ReactionCache.findOne({
         uuid: user.id,
         reactionId: reactionString,
-        messageId: reaction.message.channel.id
+        messageId: reaction.message.id
       });
       if (cachedReaction) return;
 
@@ -88,7 +88,7 @@ const onReactionAdd = async (
         await ReactionCache.create({
           uuid: user.id,
           reactionId: reactionString,
-          messageId: reaction.message.channel.id
+          messageId: reaction.message.id
         });
 
         const successMessage = successEmbedGenerator({
@@ -105,7 +105,6 @@ const onReactionAdd = async (
           `Successfully sended a reward with id ${reward.reward_id} in ${channel.pool_address} to ${author.public_address}`
         );
       } catch (error) {
-        console.log(error);
         logger.error(
           `Failed to send a reward with id ${reward.reward_id} in ${channel.pool_address} to ${author.public_address}`
         );
