@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 const ReactionCacheSchema: Schema = new Schema({
-  uuid: { type: String, required: true, unique: true },
+  uuid: { type: String, required: true },
   reactionId: { type: String, required: true },
   messageId: { type: String, required: true }
 });
