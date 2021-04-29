@@ -8,6 +8,7 @@ import ListenerType from 'constants/ListenerType';
 import { failedEmbedGenerator, successEmbedGenerator } from 'utils/embed';
 import { CommandHandler } from 'types';
 import { getAccessToken } from 'utils/axios';
+import { usageGenerate } from 'utils/messages';
 
 const setup: CommandHandler = async message => {
   const clientIdRes = await promter.message(
@@ -95,5 +96,9 @@ export default listenerGenerator({
   handler: setup,
   type: ListenerType.GUILD_ADMINS,
   helpMessage: 'Setting up basic settings for Guild',
-  usageMessage: 'Setting up basic settings for Guild'
+  usageMessage: usageGenerate({
+    name: 'guild',
+    desc: 'Setting up basic settings for Guild',
+    path: 'setup guild'
+  })
 });

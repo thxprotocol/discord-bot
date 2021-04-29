@@ -9,7 +9,7 @@ import { listenerGenerator } from 'utils/command';
 import ListenerType from 'constants/ListenerType';
 import { failedEmbedGenerator, successEmbedGenerator } from 'utils/embed';
 import { CommandHandler } from 'types';
-import { getPrefix } from 'utils/messages';
+import { getPrefix, usageGenerate } from 'utils/messages';
 import {
   discordEmojiRegex,
   emojiRegex
@@ -191,5 +191,9 @@ export default listenerGenerator({
   handler: add,
   type: ListenerType.GUILD_ADMINS,
   helpMessage: 'Add a reward with a emoji',
-  usageMessage: 'Add a reward with a emoji'
+  usageMessage: usageGenerate({
+    name: 'add',
+    desc: 'Start a process to add a new Emoji as a reward',
+    path: 'emoji add'
+  })
 });

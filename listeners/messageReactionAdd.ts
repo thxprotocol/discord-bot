@@ -1,6 +1,7 @@
 import { MessageReaction, PartialUser, User as DiscordUser } from 'discord.js';
 import Channel from 'models/channel';
 import Reaction from 'models/reaction';
+import ReactionCache from 'models/reactionCache';
 import Guild from 'models/guild';
 import User from 'models/user';
 import { getReactionString } from 'commands/emoji/add/utils';
@@ -23,7 +24,7 @@ const onReactionAdd = async (
     const logger = getLogger();
     await reaction.message.fetch();
     const isLinked = await checkChannelIsPool(reaction.message.channel.id);
-    const isOwner = user.id === reaction.message.author.id;
+    const isOwner = false;
     if (isLinked && !isOwner) {
       const channel = await Channel.findOne({
         id: reaction.message.channel.id
@@ -51,6 +52,15 @@ const onReactionAdd = async (
         uuid: reaction.message.author.id
       });
       if (!author || !author.public_address) return;
+      // Return if the reaction author is
+      // reaction the message.
+      const cachedReaction = await ReactionCache.findOne({
+        uuid: user.id,
+        reactionId: reactionString,
+        messageId: reaction.message.channel.id
+      });
+      if (cachedReaction) return;
+
       const accessToken = await getAccessToken(
         guild.client_id,
         guild.client_secret
@@ -75,6 +85,12 @@ const onReactionAdd = async (
           reaction.message.author.id
         );
 
+        await ReactionCache.create({
+          uuid: user.id,
+          reactionId: reactionString,
+          messageId: reaction.message.channel.id
+        });
+
         const successMessage = successEmbedGenerator({
           title: 'You got a new reward!',
           description: 'Now you can claim it by click the link above',
@@ -89,6 +105,7 @@ const onReactionAdd = async (
           `Successfully sended a reward with id ${reward.reward_id} in ${channel.pool_address} to ${author.public_address}`
         );
       } catch (error) {
+        console.log(error);
         logger.error(
           `Failed to send a reward with id ${reward.reward_id} in ${channel.pool_address} to ${author.public_address}`
         );

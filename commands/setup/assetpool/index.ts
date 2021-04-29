@@ -103,6 +103,7 @@ export default listenerGenerator({
   helpMessage: 'Setting up Asset Pool in Current Channel',
   usageMessage: usageGenerate({
     name: 'assetpool',
-    desc: 'Setting up Asset Pool in Current Channel'
+    desc: 'Setting up Asset Pool in Current Channel',
+    path: 'setup assetpool'
   })
 });

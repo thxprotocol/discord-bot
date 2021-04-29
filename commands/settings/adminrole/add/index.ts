@@ -1,9 +1,11 @@
+import * as Yup from 'yup';
 import { CommandHandler } from 'types';
 import GuildModel from 'models/guild';
 import { listenerGenerator } from 'utils/command';
 import ListenerType from 'constants/ListenerType';
 import { failedEmbedGenerator, successEmbedGenerator } from 'utils/embed';
 import { extractRoleFromMention } from './utils';
+import { usageGenerate } from 'utils/messages';
 
 const add: CommandHandler = async (message, params) => {
   const roleId = extractRoleFromMention(params[0]);
@@ -34,6 +36,13 @@ export default listenerGenerator({
   queued: true,
   handler: add,
   type: ListenerType.GENERAL,
-  helpMessage: 'This command return a pong when you call it (Developer only)',
-  usageMessage: 'This command return a pong when you call it (Developer only)'
+  validationSchema: Yup.array().min(1),
+  helpMessage: 'Add a role as a Admin',
+  usageMessage: usageGenerate({
+    name: 'add',
+    desc: 'Add a role as a Admin',
+    path: 'settings adminrole add',
+    params: ['adminrole_id | tag'],
+    example: 'settings adminrole add 836152744158167051'
+  })
 });

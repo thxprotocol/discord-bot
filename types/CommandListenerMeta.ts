@@ -2,8 +2,6 @@ import ListenerType from 'constants/ListenerType';
 import { MessageEmbed } from 'discord.js';
 
 interface CommandListenerMeta {
-  /** Parent of this command. */
-  parent?: string;
   /** Command Name. */
   name: string;
   /** Command Handler Type. */
@@ -16,6 +14,12 @@ interface CommandListenerMeta {
   cooldown?: number;
   /** Should run this command in a queue or not */
   queued?: boolean;
+  /** Show how depth of this command */
+  depth?: number;
+  /* Child of command */
+  childs: {
+    [key: string]: CommandListenerMeta;
+  };
 }
 
 export default CommandListenerMeta;

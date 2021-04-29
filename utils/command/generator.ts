@@ -40,21 +40,34 @@ const generator: CommandListener = ({
   // This will make sure vars inside this anon
   // function is clearable by Garbage collector
   (function () {
-    let parent = undefined;
+    // let parent = undefined;
     const commandDepthArray = getCurrentLocation()
       .replace(getStaticPath('commands'), '')
       .replace('/index.ts', '')
       .slice(1, getCurrentLocation().length)
       ?.split('/');
     if (commandDepthArray?.length > 1) {
-      parent =
-        commandDepthArray[
-          commandDepthArray.findIndex(item => item === name) - 1
-        ];
+      // parent =
+      //   commandDepthArray[
+      //     commandDepthArray.findIndex(item => item === name) - 1
+      //   ];
     }
 
+    const itemIndex = commandDepthArray.findIndex(item => item === name);
+    const depthArray = commandDepthArray.splice(0, itemIndex);
+
     const dispatch = useDispatch();
-    dispatch(addCommandMeta({ parent, name, type, helpMessage, usageMessage }));
+    const depth = commandDepthArray.length;
+    dispatch(
+      addCommandMeta(depthArray, {
+        name,
+        type,
+        helpMessage,
+        usageMessage,
+        depth,
+        childs: {}
+      })
+    );
   })();
   // Inner scope
   return async (message, params) => {

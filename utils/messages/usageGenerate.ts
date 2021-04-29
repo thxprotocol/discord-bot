@@ -1,4 +1,3 @@
-import embedGenerator from 'utils/embed';
 import getPrefix from './getPrefix';
 
 interface Props {
@@ -13,20 +12,27 @@ interface Props {
 const paramsFormatter = (params: string[]) =>
   params.map(param => `<${param}>`).join(' ');
 
-const usageGenerate = ({ name, desc, path, params, example }: Props) => {
-  const embed = embedGenerator({});
-  embed.setTitle(`**Command**: ${name}`);
-  embed.addField('**Description**', `\`${desc}\``);
+const usageGenerate = ({
+  name,
+  desc,
+  path,
+  params,
+  example
+}: Props): string => {
+  let usageString = '';
+
+  usageString += `**Command**: ${name}\n`;
+  usageString += `**Description**: ${desc}\n`;
+
   if (params && path) {
-    embed.addField(
-      '**Usage**',
-      `\`${getPrefix()}${path} ${paramsFormatter(params)}\``
-    );
+    usageString += `**Usage**: \`${getPrefix()}${path} ${paramsFormatter(
+      params
+    )}\`\n`;
   }
   if (example) {
-    embed.addField('**Example**', `\`${getPrefix()}${example}\``);
+    usageString += `**Example**: \`${getPrefix()}${example}\`\n`;
   }
-  return embed;
+  return usageString;
 };
 
 export default usageGenerate;

@@ -1,9 +1,11 @@
+import * as Yup from 'yup';
 import GuildModel from 'models/guild';
 import { CommandHandler } from 'types';
 import { listenerGenerator } from 'utils/command';
 import ListenerType from 'constants/ListenerType';
 import { failedEmbedGenerator, successEmbedGenerator } from 'utils/embed';
 import { extractRoleFromMention } from '../add/utils';
+import { usageGenerate } from 'utils/messages';
 
 const remove: CommandHandler = async (message, params) => {
   const roleId = extractRoleFromMention(params[0]);
@@ -34,6 +36,13 @@ export default listenerGenerator({
   queued: true,
   handler: remove,
   type: ListenerType.GENERAL,
-  helpMessage: 'This command return a pong when you call it (Developer only)',
-  usageMessage: 'This command return a pong when you call it (Developer only)'
+  validationSchema: Yup.array().min(1),
+  helpMessage: 'Remove a role from admin list',
+  usageMessage: usageGenerate({
+    name: 'remove',
+    desc: 'Remove a role from admin list',
+    path: 'settings adminrole remove',
+    params: ['adminrole_id | tag'],
+    example: 'settings adminrole remove 836152744158167051'
+  })
 });
