@@ -24,7 +24,7 @@ const onReactionAdd = async (
     const logger = getLogger();
     await reaction.message.fetch();
     const isLinked = await checkChannelIsPool(reaction.message.channel.id);
-    const isOwner = false;
+    const isOwner = user.id === reaction.message.author.id;
     if (isLinked && !isOwner) {
       const channel = await Channel.findOne({
         id: reaction.message.channel.id
