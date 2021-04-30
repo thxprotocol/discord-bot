@@ -31,7 +31,7 @@ async function onGuildCreate(guild: Guild): Promise<void> {
     `By running the command \`${prefix}emoji add\` In certain channel, the bot will ask for the emoji you want to use to reward others, ammount and delay of reward.`
   );
 
-  welcomeEmbed.addField('', '---------------------');
+  welcomeEmbed.addField('------------------------------', '\u200B');
   welcomeEmbed.addField(
     '**Inviting orther people to help you**',
     `You able to invite other peoples that have certant roles to help you manage your server, just use this command: \`${prefix}settings adminroles add/remove <role_that_you_want_the_bot_will_see_as_admin>\` `
