@@ -5,6 +5,8 @@ export default listenerGenerator({
   name: 'setup',
   queued: true,
   type: ListenerType.GUILD_ADMINS,
-  helpMessage: 'This command return a pong when you call it (Developer only)',
-  usageMessage: 'This command return a pong when you call it (Developer only)'
+  helpMessage:
+    'A Group of commands that help guild owner-admins setting up they servers',
+  usageMessage:
+    'A Group of commands that help guild owner-admins setting up they servers'
 });
