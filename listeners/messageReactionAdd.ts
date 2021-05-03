@@ -68,8 +68,9 @@ const onReactionAdd = async (
       const axios = getClientWithAccess(accessToken || '');
       const params = new URLSearchParams();
       params.append('member', author.public_address);
+
       try {
-        await axios({
+        const r = await axios({
           method: 'POST',
           url: `https://api.thx.network/v1/rewards/${reward.reward_id}/give`,
           headers: {
@@ -77,6 +78,20 @@ const onReactionAdd = async (
           },
           data: params
         });
+
+        try {
+          await axios({
+            method: 'POST',
+            url: `https://api.thx.network/v1/withdrawals/${r.data.withdrawal}/withdraw`,
+            headers: {
+              AssetPool: channel.pool_address
+            }
+          });
+        } catch (e) {
+          logger.error(
+            `Failed to finalize the withdrawal with id ${r.data.withdrawal} in ${channel.pool_address} to ${author.public_address}`
+          );
+        }
 
         const contractLink = getWalletLink(channel.pool_address);
 

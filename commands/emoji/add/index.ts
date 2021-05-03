@@ -115,42 +115,43 @@ const add: CommandHandler = async message => {
     });
   }
 
-  const withdrawDurationRes = await promter.message(
-    message.channel as TextChannel | DMChannel,
-    {
-      max: 1,
-      question: 'Please spectify your reward duration?',
-      userId: message.author.id,
-      timeout: 10000
-    }
-  );
+  // const withdrawDurationRes = await promter.message(
+  //   message.channel as TextChannel | DMChannel,
+  //   {
+  //     max: 1,
+  //     question: 'Please spectify your reward duration?',
+  //     userId: message.author.id,
+  //     timeout: 10000
+  //   }
+  // );
 
-  if (!withdrawDurationRes) {
-    return failedEmbedGenerator({
-      description: 'Please start again this process'
-    });
-  } else if (!withdrawDurationRes.size) {
-    return failedEmbedGenerator({
-      description: 'Please start again this process'
-    });
-  }
+  // if (!withdrawDurationRes) {
+  //   return failedEmbedGenerator({
+  //     description: 'Please start again this process'
+  //   });
+  // } else if (!withdrawDurationRes.size) {
+  //   return failedEmbedGenerator({
+  //     description: 'Please start again this process'
+  //   });
+  // }
 
-  const withdrawDuration = _.toNumber(
-    withdrawAmountRes.first()?.cleanContent || ''
-  );
+  // const withdrawDuration = _.toNumber(
+  //   withdrawAmountRes.first()?.cleanContent || ''
+  // );
 
-  if (!withdrawDuration) {
-    return failedEmbedGenerator({
-      description: 'This not a valid number'
-    });
-  }
+  // if (!withdrawDuration) {
+  //   return failedEmbedGenerator({
+  //     description: 'This not a valid number'
+  //   });
+  // }
 
   // Creating Reward
   const reactionString = getReactionString(isNormalEmoji, isDiscordEmoji);
   const axios = getClientWithAccess(accessToken);
   const params = new URLSearchParams();
   params.append('withdrawAmount', `${withdrawAmount}`);
-  params.append('withdrawDuration', `${withdrawDuration}`);
+  // params.append('withdrawDuration', `${withdrawDuration}`);
+  params.append('withdrawDuration', `0`);
 
   const rewardResponse: RewardResponse = await axios({
     url: 'https://api.thx.network/v1/rewards',

@@ -14,7 +14,7 @@ const onGuildMemberAdd = async (discordUser: DiscordUser | PartialUser) => {
   const welcomeEmbed = embedGenerator({});
   welcomeEmbed.setTitle('Hey there! Glad to see you here!');
   welcomeEmbed.setDescription(
-    `By setting up your wallet with command \`${prefix}wallet update <ADDRESS>\`, you will able to interact with me and rewarding orders for they contribute.`
+    `You can create your wallet with command \`${prefix}wallet create <email> <password>\`. You will able to interact with me and reward others for their contributions.`
   );
   ownerChannel.send(welcomeEmbed);
 };
