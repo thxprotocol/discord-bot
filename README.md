@@ -1,68 +1,122 @@
-# BEST DISCORD BOT TEMPLATE EVER
+# THX Discord Bot
 
-<p>
-  <a href="https://github.com/GarfDev/best-discord-bot-typescript-template-ever" target="_blank">
-    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
-  </a>
-  <a href="#" target="_blank">
-    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
-  </a>
-</p>
+## Description
 
-![Start up console](https://i.imgur.com/gYtRaRU.png 'Start up console')
+The THX Bot can be used to reward message authors with ERC20 tokens from a pool by reacting with certain emojies on their contributions in a channel.
 
-A Discord bot boilerplate that aim to typesafe, stable and functional.
+## Commands
 
-If you have any suggestion, request of error, please kindly create an issues on [here](https://github.com/GarfDev/best-discord-bot-typescript-template-ever).
+This is the list of commands that you can use to interact with THX Bot.
 
-## Table of Contents
+```
+>help
+Return the list of commands.
 
-- [Problems that this project aim to solve](#problemthatthisprojectaimtosolve)
-- [Install](#install)
-- [Quick start](#quickstart)
-- [Contributing](#contributing)
-- [License](#license)
+>ping
+This command return a pong.
 
-## Problems that this project aim to solve
+>settings adminrole <@discord_id>
+Elevates the bot permissions for another user of your guild.
 
-- **Global State Management**: with help of [Redux](https://redux.js.org/) (and some handmade hook), we now have only 1 source of trust, help every function invoke now sync with other.
+>setup guild
+Prompts for THX App client_id and client_secret.
 
-- **Easier to handle Side-effects**: Async/Await and Promise is good, but is hard to keep our codebase clear (and a little bit flat) if we need to handle bunch of callback. With help of [Redux-saga](https://redux-saga.js.org/), It easier to multitasking-achieved, save us some times while construct complex application logic and maintain code readability at the same time.
+>setup assetpool
+Prompts for THX Asset Pool contract address.
 
-- **Typesafe**: It Typesafe.
+>emoji add
+Prompts for emoji and reward amount.
 
-- **Functional**: There no class in here.
+>wallet create <email> <password>
+Creates a temporary wallet address for your to use in Discord.
 
-## Install
+>wallet update <address>
+Links an existing wallet address to your user.
 
-This project uses [node](http://nodejs.org) and [npm](https://npmjs.com). Go check them out if you don't have them locally installed.
+>wallet info
+Shows the linked wallet address and ERC20 token balance.
 
-```sh
-$ git pull https://github.com/GarfDev/best-discord-bot-typescript-template-ever.git
+>wallet login <email>
+Sends a one-time login link to the e-mail address (valid for 10 minutes).
 ```
 
-or use this as template by simply click on `Use this at template button`.
+### Prerequisites
 
-## Quickstart
+#### 1. [Signup for a THX account](https://www.thx.network/signup)
 
-In this state setting up is dead simple. First run following command if you use YARN:
+Signup is free while we are in beta so let's give it a try!
 
-```bash
-yarn
+#### 2. [Create an Application & ERC20 pool](https://dashboard.thx.network)
+
+The application is used to authorize with our API. You can create your own ERC20 token with a limited or unlimited supply and deploy it in a fresh asset pool. Deploying your smart contract can take up to ~20 seconds.
+
+> Make sure to edit you asset pool after deployment and disable the governance setting. This feature is currently not supported by the THX Bot.
+
+#### 3. [Invite THX Bot to your guild](https://discord.com/api/oauth2/authorize?client_id=834081848636211220&permissions=8&scope=bot)
+
+By clicking this link you will be asked which guild the THX Bot should join.
+
+### Setup THX Bot (only admin)
+
+**1. Authorize your guild**
+
+```
+>setup guild
+
+1. What is your Client ID?
+BQGVaUo9LnERPHo9Ci_I2
+2. What is your Client Token?
+wFzMnzyisiqjBmSXR0egHePIYOjSPtSg2jwQUrvWpAWWj79emM_3VHeEgcsxEmhTUAUxvtCu59K41FKfIoZyVg
 ```
 
-or NPM:
+**2. Connect your pool to a channel**
 
-```bash
-npm install
+```
+>setup assetpool
+
+1. What is your contract address?
+0x38728E872553Cd8189A6E5cB916B15Ad78Ae0a42
 ```
 
-## Contributing
+**3. Create emoji rewards**
 
-Feel free to dive in! [Open an issue](https://github.com/GarfDev/best-discord-bot-typescript-template-ever/issues/new) or submit PRs.
+```
+>emoji add
 
-Standard Readme follows the [Contributor Covenant](http://contributor-covenant.org/version/1/3/0/) Code of Conduct.
+1. What emoji you want to use?
+:rocket:
+2. Please spectify your reward value?
+3
+```
 
-## License
+### Link THX Wallet (all guild users)
 
-[MIT](LICENSE) © GarfDev
+**1. Create a new THX wallet**
+A THX account will be created for e-mail and password you provide. Your temporary private key will be encrypted with the password you provide.
+
+```
+>wallet create john@doe.com $secret123
+```
+
+**2. Link an existing THX wallet**
+This wallet address will be linked to your Discord user and used to transfer rewards to.
+
+```
+>wallet update 0xeF6cF3A2294dB6cBdc010e559387696714307eA5
+```
+
+**3. Send a one-time login link for you wallet**
+This command will send a login link to the provided e-mail address. After clicking the link in the e-mail you will be prompted to change your password and your existing rewards will be given to the new address you get when entering the Web Wallet
+
+> Make sure to link your new wallet address with `>wallet update <address>`!
+
+```
+>wallet login @john@doe.com
+```
+
+**3. Show wallet information**
+Show the currently linked wallet address and token balance for that address.
+
+```
+>wallet info
+```
