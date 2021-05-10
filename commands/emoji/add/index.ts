@@ -162,15 +162,6 @@ const add: CommandHandler = async message => {
     data: params
   });
 
-  // Activate Reward
-  await axios({
-    method: 'POST',
-    url: `https://api.thx.network/v1/rewards/${rewardResponse.data.id}/poll/finalize`,
-    headers: {
-      AssetPool: channel.pool_address
-    }
-  });
-
   await ReactionSchema.findOneAndUpdate(
     { reaction_id: reactionString, channel },
     {
