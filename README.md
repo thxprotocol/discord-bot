@@ -52,7 +52,7 @@ The application is used to authorize with our API. You can create your own ERC20
 
 > Make sure to edit you asset pool after deployment and disable the governance setting. This feature is currently not supported by the THX Bot.
 
-#### 3. [Invite THX Bot to your guild](https://discord.com/api/oauth2/authorize?client_id=834081848636211220&permissions=8&scope=bot)
+#### 3. [Invite THX Bot to your guild](https://discord.com/api/oauth2/authorize?client_id=834083368370700299&permissions=8&scope=bot)
 
 By clicking this link you will be asked which guild the THX Bot should join.
 
@@ -92,6 +92,7 @@ wFzMnzyisiqjBmSXR0egHePIYOjSPtSg2jwQUrvWpAWWj79emM_3VHeEgcsxEmhTUAUxvtCu59K41FKf
 ### Link THX Wallet (all guild users)
 
 **1. Create a new THX wallet**
+
 A THX account will be created for e-mail and password you provide. Your temporary private key will be encrypted with the password you provide.
 
 ```
@@ -99,6 +100,7 @@ A THX account will be created for e-mail and password you provide. Your temporar
 ```
 
 **2. Link an existing THX wallet**
+
 This wallet address will be linked to your Discord user and used to transfer rewards to.
 
 ```
@@ -106,6 +108,7 @@ This wallet address will be linked to your Discord user and used to transfer rew
 ```
 
 **3. Send a one-time login link for you wallet**
+
 This command will send a login link to the provided e-mail address. After clicking the link in the e-mail you will be prompted to change your password and your existing rewards will be given to the new address you get when entering the Web Wallet
 
 > Make sure to link your new wallet address with `>wallet update <address>`!
@@ -115,6 +118,7 @@ This command will send a login link to the provided e-mail address. After clicki
 ```
 
 **3. Show wallet information**
+
 Show the currently linked wallet address and token balance for that address.
 
 ```
