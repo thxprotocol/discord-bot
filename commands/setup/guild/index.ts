@@ -1,7 +1,7 @@
 import Reaction from 'models/reaction';
 import Channel from 'models/channel';
 import Guild from 'models/guild';
-import { DMChannel, TextChannel } from 'discord.js';
+import { DMChannel } from 'discord.js';
 import promter from 'discordjs-prompter';
 import { listenerGenerator } from 'utils/command';
 import ListenerType from 'constants/ListenerType';
@@ -9,50 +9,63 @@ import { failedEmbedGenerator, successEmbedGenerator } from 'utils/embed';
 import { CommandHandler } from 'types';
 import { getAccessToken } from 'utils/axios';
 import { usageGenerate } from 'utils/messages';
+import { getDMChannelByUserId } from 'utils';
 
 const setup: CommandHandler = async message => {
-  const clientIdRes = await promter.message(
-    message.channel as TextChannel | DMChannel,
-    {
-      question: 'What is your client ID?',
-      userId: message.author.id,
-      max: 1,
-      timeout: 10000
-    }
-  );
+  let user = await getDMChannelByUserId(message.author.id);
+  if (!user.dmChannel) {
+    // Try to send an Initial to establish an DM Channel with user
+    // In many cases, discord choose to "forgot" an channel and
+    // This help to establish it again
+    await message.author.send(
+      'Let start your setup process by asnwer following questions in here!'
+    );
+    user = await getDMChannelByUserId(message.author.id);
+  }
+  if (!user.dmChannel) {
+    return failedEmbedGenerator({
+      description:
+        'Please start again this process (If you not seeing DM from the bot, please check your setting)'
+    });
+  }
+
+  const clientIdRes = await promter.message(user.dmChannel as DMChannel, {
+    question: 'What is your client ID?',
+    userId: message.author.id,
+    max: 1,
+    timeout: 30000
+  });
 
   if (!clientIdRes) {
     return failedEmbedGenerator({
-      description: 'Please start again this process'
+      description:
+        'Please start again this process (If you not seeing DM from the bot, please check your setting)'
     });
   } else if (!clientIdRes.size) {
     return failedEmbedGenerator({
-      description: 'Please start again this process'
+      description:
+        'Please start again this process (If you not seeing DM from the bot, please check your setting)'
     });
   }
 
-  await clientIdRes.first()?.delete();
-  const clientTokenRes = await promter.message(
-    message.channel as TextChannel | DMChannel,
-    {
-      question: 'What is your Client Token?',
-      userId: message.author.id,
-      max: 1,
-      timeout: 10000
-    }
-  );
+  const clientTokenRes = await promter.message(user.dmChannel as DMChannel, {
+    question: 'What is your Client Token?',
+    userId: message.author.id,
+    max: 1,
+    timeout: 30000
+  });
 
   if (!clientTokenRes) {
     return failedEmbedGenerator({
-      description: 'Please start again this process'
+      description:
+        'Please start again this process (If you not seeing DM from the bot, please check your setting)'
     });
   } else if (!clientTokenRes.size) {
     return failedEmbedGenerator({
-      description: 'Please start again this process'
+      description:
+        'Please start again this process (If you not seeing DM from the bot, please check your setting)'
     });
   }
-
-  await clientTokenRes.first()?.delete();
 
   // Map variables
   const clientId = clientIdRes.first()?.cleanContent || '';
@@ -60,7 +73,12 @@ const setup: CommandHandler = async message => {
 
   // Try to get access token from user inputs
   try {
-    await getAccessToken(clientId, clientToken);
+    const accessToken = await getAccessToken(clientId, clientToken);
+    if (!accessToken) {
+      return failedEmbedGenerator({
+        description: 'Your Client ID or Client Secrect may not correct'
+      });
+    }
     const guild = await Guild.findOneAndUpdate(
       { id: message.guild?.id },
       { client_id: clientId, client_secret: clientToken },
