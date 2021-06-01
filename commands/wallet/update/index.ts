@@ -55,7 +55,7 @@ const update: CommandHandler = async (message, params) => {
 
   if (!guild?.client_id || !guild?.client_secret) {
     return failedEmbedGenerator({
-      description: `To do this, please setup Client ID and Client Token for your Guild first by: \`${getPrefix()}setup guild\` command`
+      description: `To do this, please setup Client ID and Client Secret for your Guild first with the \`${getPrefix()}setup guild\` command.`
     });
   }
 
@@ -70,7 +70,7 @@ const update: CommandHandler = async (message, params) => {
 
   if (!channel?.pool_address) {
     return failedEmbedGenerator({
-      description: `To do this, please setup Contract Address for your Channel first by: \`${getPrefix()}setup assetpool\` command`
+      description: `To do this, please setup the Asset Pool contract address for your channel first with the \`${getPrefix()}setup assetpool\` command.`
     });
   }
 

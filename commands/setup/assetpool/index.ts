@@ -21,14 +21,14 @@ const setup: CommandHandler = async message => {
 
   if (!guild?.client_id || !guild?.client_secret) {
     return failedEmbedGenerator({
-      description: `To do this, please setup Client ID and Client Token for your Guild first by: \`${getPrefix()}setup\` command`
+      description: `Please configure your Client ID and Client Secret for the guild first with the: \`${getPrefix()}setup\` command.`
     });
   }
 
   const contractAddressRes = await promter.message(
     message.channel as TextChannel | DMChannel,
     {
-      question: 'What is your contract address?',
+      question: 'What is your asset pool contract address?',
       userId: message.author.id,
       max: 1,
       timeout: 10000
@@ -37,18 +37,18 @@ const setup: CommandHandler = async message => {
 
   if (!contractAddressRes) {
     return failedEmbedGenerator({
-      description: 'Please start again this process'
+      description: 'Please start this process again.'
     });
   } else if (!contractAddressRes.size) {
     return failedEmbedGenerator({
-      description: 'Please start again this process'
+      description: 'Please start this process again.'
     });
   }
   const contractAddress = contractAddressRes.first()?.cleanContent || '';
 
   if (!walletRegex.test(contractAddress)) {
     return failedEmbedGenerator({
-      description: 'Invalid Contract Address'
+      description: 'Invalid asset pool contract address'
     });
   }
 
@@ -61,14 +61,15 @@ const setup: CommandHandler = async message => {
 
     if (!accessToken) {
       return failedEmbedGenerator({
-        description: 'Invalid Client ID or Client Token, please setup again'
+        description:
+          'Invalid Client ID or Client Secret, please run `${getPrefix()}setup` again'
       });
     }
 
     const isValid = await checkAssetPool(contractAddress, accessToken);
     if (!isValid) {
       return failedEmbedGenerator({
-        description: 'Invalid Contract Address'
+        description: 'Invalid asset pool contract address'
       });
     }
 
@@ -85,12 +86,12 @@ const setup: CommandHandler = async message => {
       await Reaction.deleteMany({ channel: channel });
     }
     return successEmbedGenerator({
-      title: `Successfully update asset pool for this channel`,
-      description: `Now you can continue on linking rewards and emoji by command: \`${getPrefix()}emoji add\``
+      title: `Successfully updated the asset pool for this channel.`,
+      description: `Please configure some rewards for reaction emoji with this command: \`${getPrefix()}emoji add\`.`
     });
   } catch {
     return failedEmbedGenerator({
-      description: 'Invalid Contract Address'
+      description: 'Invalid asset pool contract address'
     });
   }
 };

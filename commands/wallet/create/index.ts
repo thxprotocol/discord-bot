@@ -29,7 +29,7 @@ const create: CommandHandler = async (message, params) => {
 
   if (!guild?.client_id || !guild?.client_secret) {
     return failedEmbedGenerator({
-      description: `To do this, please setup Client ID and Client Token for your Guild first by: \`${getPrefix()}setup guild\` command`
+      description: `To do this, please setup Client ID and Client Secret for your Guild first by: \`${getPrefix()}setup guild\` command`
     });
   }
 
@@ -43,7 +43,7 @@ const create: CommandHandler = async (message, params) => {
 
     if (!accessToken) {
       return failedEmbedGenerator({
-        description: 'Invalid Client ID or Client Token, please setup again'
+        description: 'Invalid Client ID or Client Secret, please setup again'
       });
     }
 

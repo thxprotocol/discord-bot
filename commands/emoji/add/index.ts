@@ -27,7 +27,7 @@ const add: CommandHandler = async message => {
 
   if (!channel?.pool_address) {
     return failedEmbedGenerator({
-      description: `To do this, please setup Contract Address for your Channel first by: \`${getPrefix()}setup assetpool\` command`
+      description: `To do this, please configure a Asset Pool contract address for your channel first with the \`${getPrefix()}setup assetpool\` command.`
     });
   }
 
@@ -43,11 +43,11 @@ const add: CommandHandler = async message => {
 
   if (!reactionRes) {
     return failedEmbedGenerator({
-      description: 'Please start again this process'
+      description: 'Please start this process again.'
     });
   } else if (!reactionRes.size) {
     return failedEmbedGenerator({
-      description: 'Please start again this process'
+      description: 'Please start this process again.'
     });
   }
 
@@ -58,7 +58,7 @@ const add: CommandHandler = async message => {
 
   if (!isDiscordEmoji && !isNormalEmoji) {
     return failedEmbedGenerator({
-      description: 'This not a valid emoji'
+      description: 'This is not a valid emoji.'
     });
   }
 
@@ -68,7 +68,7 @@ const add: CommandHandler = async message => {
 
   if (!guild?.client_id || !guild?.client_secret) {
     return failedEmbedGenerator({
-      description: `To do this, please setup Client ID and Client Token for your Guild first by: \`${getPrefix()}setup guild\` command`
+      description: `To do this, please setup Client ID and Client Secret for your Guild first with the: \`${getPrefix()}setup guild\` command`
     });
   }
 
@@ -79,7 +79,8 @@ const add: CommandHandler = async message => {
 
   if (!accessToken) {
     return failedEmbedGenerator({
-      description: 'Invalid Client ID or Client Token, please setup again'
+      description:
+        'Invalid Client ID or Client Secret, please run `${getPrefix()}setup guild` again.'
     });
   }
   // Collect further Inforamtion after
@@ -89,7 +90,7 @@ const add: CommandHandler = async message => {
     message.channel as TextChannel | DMChannel,
     {
       max: 1,
-      question: 'Please spectify your reward value?',
+      question: 'Please spectify the reward size?',
       userId: message.author.id,
       timeout: 10000
     }
@@ -97,11 +98,11 @@ const add: CommandHandler = async message => {
 
   if (!withdrawAmountRes) {
     return failedEmbedGenerator({
-      description: 'Please start again this process'
+      description: 'Please start this process again.'
     });
   } else if (!withdrawAmountRes.size) {
     return failedEmbedGenerator({
-      description: 'Please start again this process'
+      description: 'Please start this process again.'
     });
   }
 
@@ -111,7 +112,7 @@ const add: CommandHandler = async message => {
 
   if (!withdrawAmount) {
     return failedEmbedGenerator({
-      description: 'This not a valid number'
+      description: 'This is not a valid number'
     });
   }
 
@@ -174,7 +175,7 @@ const add: CommandHandler = async message => {
 
   // Cleaning up
   return successEmbedGenerator({
-    description: 'Successfully link a reward to this reaction'
+    description: 'Successfully linked a reward to this reaction emoji.'
   });
 };
 export default listenerGenerator({
@@ -182,10 +183,10 @@ export default listenerGenerator({
   queued: true,
   handler: add,
   type: ListenerType.GUILD_ADMINS,
-  helpMessage: 'Add a reward with a emoji',
+  helpMessage: 'Link a reward to an emoji',
   usageMessage: usageGenerate({
     name: 'add',
-    desc: 'Start a process to add a new Emoji as a reward',
+    desc: 'Start a process to link a reward to a reaction emoji.',
     path: 'emoji add'
   })
 });

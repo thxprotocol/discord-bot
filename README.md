@@ -65,7 +65,7 @@ By clicking this link you will be asked which guild the THX Bot should join.
 
 1. What is your Client ID?
 BQGVaUo9LnERPHo9Ci_I2
-2. What is your Client Token?
+2. What is your Client Secret?
 wFzMnzyisiqjBmSXR0egHePIYOjSPtSg2jwQUrvWpAWWj79emM_3VHeEgcsxEmhTUAUxvtCu59K41FKfIoZyVg
 ```
 
@@ -74,7 +74,7 @@ wFzMnzyisiqjBmSXR0egHePIYOjSPtSg2jwQUrvWpAWWj79emM_3VHeEgcsxEmhTUAUxvtCu59K41FKf
 ```
 >setup assetpool
 
-1. What is your contract address?
+1. What is your Asset Pool contract address?
 0x38728E872553Cd8189A6E5cB916B15Ad78Ae0a42
 ```
 
@@ -85,7 +85,7 @@ wFzMnzyisiqjBmSXR0egHePIYOjSPtSg2jwQUrvWpAWWj79emM_3VHeEgcsxEmhTUAUxvtCu59K41FKf
 
 1. What emoji you want to use?
 :rocket:
-2. Please spectify your reward value?
+2. Please spectify your reward size?
 3
 ```
 

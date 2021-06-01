@@ -6,7 +6,7 @@ export default listenerGenerator({
   queued: true,
   type: ListenerType.GUILD_ADMINS,
   helpMessage:
-    'A Group of commands that help guild owner-admins setting up they servers',
+    'A group of commands that help guild owner-admins setting up their guild.',
   usageMessage:
-    'A Group of commands that help guild owner-admins setting up they servers'
+    'A group of commands that help guild owner-admins setting up their guild.'
 });

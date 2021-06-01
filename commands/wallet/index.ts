@@ -6,6 +6,6 @@ export default listenerGenerator({
   cooldown: 10,
   queued: false,
   type: ListenerType.GENERAL,
-  helpMessage: 'A group of command that interact with user wallet',
-  usageMessage: 'A group of command that interact with user wallet'
+  helpMessage: 'A group of commands that interact with the users wallet',
+  usageMessage: 'A group of commands that interact with the users wallet.'
 });

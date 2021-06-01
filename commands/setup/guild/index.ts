@@ -18,19 +18,19 @@ const setup: CommandHandler = async message => {
     // In many cases, discord choose to "forgot" an channel and
     // This help to establish it again
     await message.author.send(
-      'Let start your setup process by asnwer following questions in here!'
+      "Let's setup your THX Asset Pool integration with a few questions!"
     );
     user = await getDMChannelByUserId(message.author.id);
   }
   if (!user.dmChannel) {
     return failedEmbedGenerator({
       description:
-        'Please start again this process (If you not seeing DM from the bot, please check your setting)'
+        "Please start this process again. If you don't receive a DM from THX Bot, please check the message settings for your guild."
     });
   }
 
   const clientIdRes = await promter.message(user.dmChannel as DMChannel, {
-    question: 'What is your client ID?',
+    question: 'What is your Client ID?',
     userId: message.author.id,
     max: 1,
     timeout: 30000
@@ -39,17 +39,17 @@ const setup: CommandHandler = async message => {
   if (!clientIdRes) {
     return failedEmbedGenerator({
       description:
-        'Please start again this process (If you not seeing DM from the bot, please check your setting)'
+        "Please start this process again. If you don't receive a DM from THX Bot, please check the message settings for your guild."
     });
   } else if (!clientIdRes.size) {
     return failedEmbedGenerator({
       description:
-        'Please start again this process (If you not seeing DM from the bot, please check your setting)'
+        "Please start this process again. If you don't receive a DM from THX Bot, please check the message settings for your guild."
     });
   }
 
   const clientTokenRes = await promter.message(user.dmChannel as DMChannel, {
-    question: 'What is your Client Token?',
+    question: 'What is your Client Secret?',
     userId: message.author.id,
     max: 1,
     timeout: 30000
@@ -58,12 +58,12 @@ const setup: CommandHandler = async message => {
   if (!clientTokenRes) {
     return failedEmbedGenerator({
       description:
-        'Please start again this process (If you not seeing DM from the bot, please check your setting)'
+        "Please start this process again. If you don't receive a DM from THX Bot, please check the message settings for your guild."
     });
   } else if (!clientTokenRes.size) {
     return failedEmbedGenerator({
       description:
-        'Please start again this process (If you not seeing DM from the bot, please check your setting)'
+        "Please start this process again. If you don't receive a DM from THX Bot, please check the message settings for your guild."
     });
   }
 
@@ -76,7 +76,7 @@ const setup: CommandHandler = async message => {
     const accessToken = await getAccessToken(clientId, clientToken);
     if (!accessToken) {
       return failedEmbedGenerator({
-        description: 'Your Client ID or Client Secrect may not correct'
+        description: 'Your Client ID or Client Secret may not be correct.'
       });
     }
     const guild = await Guild.findOneAndUpdate(
@@ -98,11 +98,11 @@ const setup: CommandHandler = async message => {
     });
 
     return successEmbedGenerator({
-      description: `Successfully setup Client ID and Token for your server`
+      description: `Successfully connected to your THX application.`
     });
   } catch {
     return failedEmbedGenerator({
-      description: 'Invalid Client ID and Client Token'
+      description: 'Invalid Client ID and/or Client Secret.'
     });
   }
 };
@@ -113,10 +113,10 @@ export default listenerGenerator({
   queued: false,
   handler: setup,
   type: ListenerType.GUILD_ADMINS,
-  helpMessage: 'Setting up basic settings for Guild',
+  helpMessage: 'Setting up basic settings for the guild.',
   usageMessage: usageGenerate({
     name: 'guild',
-    desc: 'Setting up basic settings for Guild',
+    desc: 'Setting up basic settings for the guild',
     path: 'setup guild'
   })
 });
