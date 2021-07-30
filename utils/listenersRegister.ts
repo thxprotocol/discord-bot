@@ -13,13 +13,15 @@ function listenersRegister(client: Client, listenersPath: string): void {
   });
 
   fileNames.forEach((name, index) => {
-    client.on(name, (...args) => {
-      try {
-        eventHandlers[index](...args);
-      } catch (err) {
-        logger.error(err.message);
-      }
-    });
+    if (name !== 'ready') {
+      client.on(name, (...args) => {
+        try {
+          eventHandlers[index](...args);
+        } catch (err) {
+          logger.error(err.message);
+        }
+      });
+    }
   });
 }
 

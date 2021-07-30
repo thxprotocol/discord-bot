@@ -1,4 +1,6 @@
+import { Action } from 'redux';
 import { sendMessage } from 'core/client';
+import getClient from 'core/client';
 import {
   call,
   takeEvery,
@@ -21,11 +23,15 @@ import {
 import ActionTypes from './actionTypes';
 import { Commands } from 'types';
 import { getCommand } from 'utils/messages';
-import { getLogger, measureElapsed } from 'utils';
+import {
+  getLogger,
+  getStaticPath,
+  listenersRegister,
+  measureElapsed
+} from 'utils';
 import { commandListenerRegister, commandObjTraveler } from 'utils/command';
 import { useDispatch, useSelector } from '@hooks';
 import { selectCommandByName } from './selectors';
-import { Action } from 'redux';
 
 /**
  * Application starting process
@@ -36,10 +42,14 @@ function* callInitApplication() {
   logger.info(`Initializing..`);
   // Pre-load commands from commands folder
   const measure = measureElapsed();
-  yield call(commandListenerRegister);
-  logger.info(`Preloaded commands`);
   yield call(mongooseConnect);
   logger.info(`Connected to mongo`);
+  yield call(commandListenerRegister);
+  logger.info(`Preloaded commands`);
+  const client = getClient();
+  const listenerPath = getStaticPath('listeners');
+  listenersRegister(client, listenerPath);
+  logger.info(`Register Listeners`);
   const elapsed = measure();
 
   logger.info(`Take ${elapsed}ms to initialize application`);

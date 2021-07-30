@@ -6,9 +6,9 @@ import { Guild } from 'discord.js';
 /**
  *
  * @param guild
- * Cleanning up guild data when the bot been kicked out the guild.
+ * Cleaning up guild data when the bot been kicked out the guild.
  */
-async function onGuildCreate(guild: Guild): Promise<void> {
+async function onGuildDelete(guild: Guild): Promise<void> {
   const toDeleteGuild = await GuildModel.findOneAndDelete({ id: guild.id });
   if (!toDeleteGuild) return;
   const channels = await ChannelModel.find({ guild: toDeleteGuild });
@@ -18,4 +18,4 @@ async function onGuildCreate(guild: Guild): Promise<void> {
   });
 }
 
-export default onGuildCreate;
+export default onGuildDelete;
