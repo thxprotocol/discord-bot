@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import getClient from 'core/client';
-import { getStaticPath, listenersRegister } from './utils';
+import onReady from 'listeners/ready';
 import 'module-alias/register';
 
 const application = async () => {
@@ -9,9 +9,7 @@ const application = async () => {
   // Init Discord Client
   const client = getClient();
 
-  // Register Event Listeners
-  const listenerPath = getStaticPath('listeners');
-  listenersRegister(client, listenerPath);
+  client.on('ready', onReady);
 
   // Login with Environment Token
   await client.login(process.env.TOKEN);

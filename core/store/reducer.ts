@@ -1,7 +1,10 @@
+import dotenv from 'dotenv';
 import { produce } from 'immer';
 import ActionTypes from './actionTypes';
 import { DEFAULT_PREFIX } from 'constants/DefaultPrefix';
 import { ApplicationRootState, ApplicationActions } from './types';
+
+dotenv.config();
 
 const initialRootState: ApplicationRootState = {
   cooldown: {},
