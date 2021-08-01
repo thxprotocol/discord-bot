@@ -3,18 +3,19 @@ import ListenerType from 'constants/ListenerType';
 import { CommandMetaState } from 'core/store/types';
 import { CommandListenerMeta } from 'types';
 
-export const getCommandMetaByType =
-  (type: ListenerType) => (commandMeta: CommandMetaState) => {
-    const filteredCommandMeta: CommandMetaState = {};
+export const getCommandMetaByType = (type: ListenerType) => (
+  commandMeta: CommandMetaState
+) => {
+  const filteredCommandMeta: CommandMetaState = {};
 
-    Object.keys(commandMeta).forEach(key => {
-      if (commandMeta[key].type === type) {
-        filteredCommandMeta[key] = commandMeta[key];
-      }
-    });
+  Object.keys(commandMeta).forEach(key => {
+    if (commandMeta[key].type === type) {
+      filteredCommandMeta[key] = commandMeta[key];
+    }
+  });
 
-    return filteredCommandMeta;
-  };
+  return filteredCommandMeta;
+};
 
 export const renderSingleCommand = (commandMeta: CommandListenerMeta) =>
   `**${commandMeta.name}**: ${commandMeta.helpMessage}\n`;

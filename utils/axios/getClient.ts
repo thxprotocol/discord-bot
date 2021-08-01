@@ -3,8 +3,9 @@ import { getLogger } from 'utils/logger';
 
 const createClient = (clientId: string, clientToken: string): AxiosInstance => {
   const authorizationString = `${clientId}:${clientToken}`;
-  const authorizationToken =
-    Buffer.from(authorizationString).toString('base64');
+  const authorizationToken = Buffer.from(authorizationString).toString(
+    'base64'
+  );
   const authorizationPayload = 'Basic ' + authorizationToken;
 
   const client = axios.create({
