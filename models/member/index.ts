@@ -2,9 +2,9 @@ export interface IMember extends Document {
   address: string;
   isMember: boolean;
   isManager: boolean;
-  balance: {
+  token: {
     name: string;
     symbol: string;
-    amount: number;
+    balance: number;
   };
 }

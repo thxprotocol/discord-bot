@@ -67,9 +67,9 @@ const info: CommandHandler = async message => {
       title: 'Member information:',
       description:
         'Balance: ' +
-        info.balance.amount +
+        info.token.balance +
         ' ' +
-        info.balance.symbol +
+        info.token.symbol +
         '\n' +
         'Address: ' +
         info.address
