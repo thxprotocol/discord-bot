@@ -35,14 +35,14 @@ const rootReducer = (
 
       return produce(state, nextState => {
         if (!depthArray.length) {
-          nextState.meta.commands[name] = meta;
+          nextState.meta.commands[name] = meta as any;
         } else {
           let currentDepth = nextState.meta.commands[depthArray[0]];
           depthArray.shift();
           depthArray.forEach(str => {
             currentDepth = currentDepth.childs[str];
           });
-          currentDepth.childs[name] = meta;
+          currentDepth.childs[name] = meta as any;
         }
       });
     }

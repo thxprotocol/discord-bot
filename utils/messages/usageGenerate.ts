@@ -17,7 +17,8 @@ const usageGenerate = ({
   desc,
   path,
   params,
-  example
+  example,
+  childs
 }: Props): string => {
   let usageString = '';
 
@@ -29,6 +30,13 @@ const usageGenerate = ({
       params
     )}\`\n`;
   }
+
+  if (childs) {
+    const childStr = childs.map(child => `\`${child}\``);
+
+    usageString += `**Nested commands**: ${childStr.join(', ')}\n`;
+  }
+
   if (example) {
     usageString += `**Example**: \`${getPrefix()}${example}\`\n`;
   }

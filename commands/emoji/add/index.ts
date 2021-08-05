@@ -186,7 +186,7 @@ export default listenerGenerator({
   helpMessage: 'Link a reward to an emoji',
   usageMessage: usageGenerate({
     name: 'add',
-    desc: 'Start a process to link a reward to a reaction emoji.',
+    desc: 'A group of commands used for configuring reaction emoji.',
     path: 'emoji add'
   })
 });

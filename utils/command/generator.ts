@@ -1,21 +1,14 @@
 import _ from 'lodash';
-import GuildModel from 'models/guild';
 import { useDispatch, useSelector } from '@hooks';
-import ListenerType from 'constants/ListenerType';
-import {
-  DEFAULT_DEVELOPER_ERROR_MESSAGE,
-  DEFAULT_DM_REQUIRED_MESSAGE,
-  DEFAULT_EXECUTION_ERROR_MESSAGE,
-  DEFAULT_GUILD_REQUIRED_MESSAGE,
-  DEFAULT_PERMISSIONS_ERROR
-} from 'constants/messages';
+import { DEFAULT_EXECUTION_ERROR_MESSAGE } from 'constants/messages';
 import { addCommandMeta, addCooldown } from 'core/store/actions';
-import { ownerIdSelector, selectCooldownById } from 'core/store/selectors';
-import { MessageEmbed, PermissionString } from 'discord.js';
+import { selectCooldownById } from 'core/store/selectors';
+import { MessageEmbed } from 'discord.js';
 import { CommandListener } from 'types';
 import { failedEmbedGenerator } from 'utils/embed';
 import inLast from 'utils/inLast';
 import { getStaticPath, getLogger } from '..';
+import permissionValidator from './permissionValidator';
 
 const getCurrentLocation = () => {
   const e = new Error();
@@ -64,6 +57,10 @@ const generator: CommandListener = ({
         type,
         helpMessage,
         usageMessage,
+        validationSchema,
+        requiredPermissions,
+        guildRequired,
+        dmRequired,
         depth,
         childs: {}
       })
@@ -72,117 +69,27 @@ const generator: CommandListener = ({
   // Inner scope
   return async (message, params) => {
     // Values
-    const userFlags = message.guild?.members.cache.get(message.author.id)
-      ?.permissions;
-
-    // Permission checks
-    const paramsValid = validationSchema?.isValidSync(params);
-    const botOwner = useSelector(ownerIdSelector);
-    const isBotOwner = botOwner === message.author.id;
     const isProduction = process.env.NODE_ENV === 'production';
-    const isRequiredFlags = requiredPermissions.length > 0 && !dmRequired;
-    const isFromCorde = isProduction
-      ? false
-      : message.author.id === process.env.CORDE_BOT_ID;
-    const isGuildOwner = message.author.id === message.guild?.ownerID;
-    const isPermissionValid = isRequiredFlags
-      ? !!(requiredPermissions as PermissionString[]).filter(requiredFlag =>
-          userFlags?.toArray().find(userFlag => requiredFlag === userFlag)
-        ).length
-      : true;
+    const isFromCorde = isProduction;
 
-    // Should apply permission checks
-    const shouldApplyParamsCheck = !!validationSchema;
-    const shouldApplyPermissionCheck = !!requiredPermissions.length;
+    const error = await permissionValidator({
+      type,
+      usageMessage,
+      validationSchema,
+      requiredPermissions,
+      guildRequired,
+      dmRequired,
+      params,
+      message
+    });
 
-    // Check Params
-    if (shouldApplyParamsCheck) {
-      if (!paramsValid) {
-        if (usageMessage instanceof MessageEmbed) {
-          return usageMessage;
-        } else {
-          return failedEmbedGenerator({
-            description: usageMessage
-          });
-        }
-      }
-    }
-
-    // @ Only check other case if
-    // it not the bot owner
-
-    if (dmRequired) {
-      if (message?.guild) {
+    if (error) {
+      if (error instanceof MessageEmbed) {
+        return error;
+      } else {
         return failedEmbedGenerator({
-          description: DEFAULT_DM_REQUIRED_MESSAGE
+          description: error
         });
-      }
-    }
-
-    if (guildRequired) {
-      if (!message?.guild) {
-        return failedEmbedGenerator({
-          description: DEFAULT_GUILD_REQUIRED_MESSAGE
-        });
-      }
-
-      // @ Bybass all further check if is guild owner
-      // @ Or Corde test, but disable in Production enviroment
-      switch (type as ListenerType) {
-        case ListenerType.BOT_OWNER: {
-          if (!isBotOwner) {
-            return failedEmbedGenerator({
-              description: DEFAULT_DEVELOPER_ERROR_MESSAGE
-            });
-          }
-          break;
-        }
-        //
-        case ListenerType.GUILD_OWNER: {
-          if (!isGuildOwner && !isFromCorde) {
-            return failedEmbedGenerator({
-              description: 'Only guild owner can do this'
-            });
-          }
-          break;
-        }
-        //
-        case ListenerType.GUILD_ADMINS: {
-          // Move this to here to save some queries
-          const guildAdminRoleIds = await GuildModel.findOne({
-            id: message.guild?.id
-          });
-          const guildAdminRoles = guildAdminRoleIds?.admin_roles;
-          const userRoles = message.guild?.members.cache
-            .get(message.author.id)
-            ?.roles.cache.array()
-            .map(role => role.id);
-          const isGuildAdmin = _.intersectionWith(
-            userRoles,
-            guildAdminRoles || [],
-            _.isEqual
-          ).length;
-          if (!isGuildOwner && !isGuildAdmin && !isFromCorde) {
-            return failedEmbedGenerator({
-              description: 'Only guild owner or guild admin can do this'
-            });
-          }
-          break;
-        }
-        //
-        case ListenerType.GENERAL: {
-          // Move this to here to save some queries
-          if (
-            !isPermissionValid &&
-            shouldApplyPermissionCheck &&
-            !isFromCorde
-          ) {
-            return failedEmbedGenerator({
-              description: DEFAULT_PERMISSIONS_ERROR
-            });
-          }
-        }
-        //
       }
     }
 

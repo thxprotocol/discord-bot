@@ -1,5 +1,7 @@
-import ListenerType from 'constants/ListenerType';
+import * as Yup from 'yup';
 import { MessageEmbed } from 'discord.js';
+import ListenerType from 'constants/ListenerType';
+import PermissionFlag from 'constants/PermissionFlag';
 
 interface CommandListenerMeta {
   /** Command Name. */
@@ -16,6 +18,16 @@ interface CommandListenerMeta {
   queued?: boolean;
   /** Show how depth of this command */
   depth?: number;
+  /** An schema that check input params is correct or not. */
+  validationSchema?: Yup.AnySchema;
+  /** Required permission for member in a guide to use this command. */
+  requiredPermissions?: PermissionFlag[];
+  /** Required roles for member in a guide to use this command. */
+  requiredRoles?: PermissionFlag[];
+  /** Is this command only useable in a guild */
+  guildRequired?: boolean;
+  /** Is this command only useable in a DM */
+  dmRequired?: boolean;
   /* Child of command */
   childs: {
     [key: string]: CommandListenerMeta;
