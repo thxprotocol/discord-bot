@@ -72,8 +72,9 @@ const generator: CommandListener = ({
   // Inner scope
   return async (message, params) => {
     // Values
-    const userFlags = message.guild?.members.cache.get(message.author.id)
-      ?.permissions;
+    const userFlags = message.guild?.members.cache.get(
+      message.author.id
+    )?.permissions;
 
     // Permission checks
     const paramsValid = validationSchema?.isValidSync(params);
