@@ -1,4 +1,4 @@
-import * as Yup from 'yup';
+import promter from 'discordjs-prompter';
 import { User } from 'models';
 import GuildSchema from 'models/guild';
 import ChannelSchema from 'models/channel';
@@ -9,19 +9,63 @@ import { failedEmbedGenerator, successEmbedGenerator } from 'utils/embed';
 import { emailRegex } from './constants';
 import { getPrefix, usageGenerate } from 'utils/messages';
 import { getAccessToken } from 'utils/axios';
+import getDMChannelByUserId from 'utils/getDMChannelByUserId';
 import getAuthenticationToken from 'utils/axios/getAuthenticationToken';
 import { decryptString } from 'utils/decrypt';
 
-const login: CommandHandler = async (message, params) => {
+const login: CommandHandler = async message => {
   await message.delete();
 
-  // Check is a valid email
-  const isValidEmail = emailRegex.test(params[0]);
+  // Prepare user to prompt
+  let discordUser = await getDMChannelByUserId(message.author.id);
+  if (!discordUser.dmChannel) {
+    // Try to send an Initial to establish an DM Channel with user
+    // In many cases, discord choose to "forgot" an channel and
+    // This help to establish it again
+    await message.author.send("Let's setup your Wallet with a few questions!");
+    discordUser = await getDMChannelByUserId(message.author.id);
+  }
+  if (!discordUser.dmChannel) {
+    return failedEmbedGenerator({
+      description:
+        "Please start this process again. If you don't receive a DM from THX Bot, please check the message settings for your guild."
+    });
+  }
+
+  // Prompt User to Input Email
+  const emailRes = await promter.message(discordUser.dmChannel, {
+    question: 'What is your email?',
+    userId: message.author.id,
+    max: 1,
+    timeout: 30000
+  });
+
+  if (!emailRes) {
+    discordUser.send(
+      failedEmbedGenerator({
+        description: 'Please start this process again later.'
+      })
+    );
+    return;
+  } else if (!emailRes.size) {
+    discordUser.send(
+      failedEmbedGenerator({
+        description: 'Please start this process again later.'
+      })
+    );
+    return;
+  }
+
+  const email = emailRes.first()?.cleanContent || '';
+  const isValidEmail = emailRegex.test(email);
 
   if (!isValidEmail) {
-    return failedEmbedGenerator({
-      description: 'This e-mail address is invalid'
-    });
+    discordUser.send(
+      failedEmbedGenerator({
+        description: 'This e-mail address is invalid'
+      })
+    );
+    return;
   }
 
   const guild = await GuildSchema.findOne({
@@ -29,16 +73,22 @@ const login: CommandHandler = async (message, params) => {
   });
 
   if (!guild?.client_id || !guild?.client_secret) {
-    return failedEmbedGenerator({
-      description: `To do this, please setup Client ID and Client Secret for your Guild first by: \`${getPrefix()}setup guild\` command`
-    });
+    discordUser.send(
+      failedEmbedGenerator({
+        description: `To do this, please setup Client ID and Client Secret for your Guild first by: \`${getPrefix()}setup guild\` command`
+      })
+    );
+    return;
   }
 
   const user = await User.findOne({ uuid: message.author.id });
   if (!user) {
-    return failedEmbedGenerator({
-      description: 'Please create a wallet address first.'
-    });
+    discordUser.send(
+      failedEmbedGenerator({
+        description: 'Please create a wallet address first.'
+      })
+    );
+    return;
   } else {
     // Use axios to
     const accessToken = await getAccessToken(
@@ -47,40 +97,51 @@ const login: CommandHandler = async (message, params) => {
     );
 
     if (!accessToken) {
-      return failedEmbedGenerator({
-        description: 'Invalid Client ID or Client Secret, please setup again'
-      });
+      discordUser.send(
+        failedEmbedGenerator({
+          description: 'Invalid Client ID or Client Secret, please setup again'
+        })
+      );
+      return;
     }
 
-    // is setted up
     const channel = await ChannelSchema.findOne({
       id: message.channel.id
     });
 
     if (!channel?.pool_address) {
-      return failedEmbedGenerator({
-        description: `To do this, please setup Contract Address for your Channel first by: \`${getPrefix()}setup assetpool\` command`
-      });
+      discordUser.send(
+        failedEmbedGenerator({
+          description: `To do this, please setup Contract Address for your Channel first by: \`${getPrefix()}setup assetpool\` command`
+        })
+      );
+      return;
     }
 
     const res = await getAuthenticationToken(
       channel.pool_address,
       accessToken,
-      params[0],
+      email,
       decryptString(user.password, process.env.SECRET)
     );
 
     if (!res) {
-      return failedEmbedGenerator({
-        description: `Failed sending your one-time login link.`
-      });
+      discordUser.send(
+        failedEmbedGenerator({
+          description: `Failed sending your one-time login link.`
+        })
+      );
+      return;
     }
 
-    return successEmbedGenerator({
-      title: 'Your one-time login has been sent!',
-      description:
-        'Valid for 10 minutes. Go to your e-mail and get access to your rewards.'
-    });
+    discordUser.send(
+      successEmbedGenerator({
+        title: 'Your one-time login has been sent!',
+        description:
+          'Valid for 10 minutes. Go to your e-mail and get access to your rewards.'
+      })
+    );
+    return;
   }
 };
 
@@ -90,13 +151,11 @@ export default listenerGenerator({
   queued: false,
   handler: login,
   type: ListenerType.GENERAL,
-  validationSchema: Yup.array().min(1).max(1),
   helpMessage: 'Login user wallet',
   usageMessage: usageGenerate({
     name: 'login',
     desc: 'Login user wallet',
     path: 'wallet login',
-    params: ['email'],
-    example: `wallet login john@doe.com`
+    example: `wallet login`
   })
 });
