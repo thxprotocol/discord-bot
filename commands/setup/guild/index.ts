@@ -112,7 +112,7 @@ export default listenerGenerator({
   cooldown: 10,
   queued: false,
   handler: setup,
-  type: ListenerType.GUILD_ADMINS,
+  type: ListenerType.GUILD_OWNER,
   helpMessage: 'Setting up basic settings for the guild.',
   usageMessage: usageGenerate({
     name: 'guild',
