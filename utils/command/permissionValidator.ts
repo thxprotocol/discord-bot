@@ -38,9 +38,8 @@ const permissionValidator = async ({
   params
 }: Props): Promise<string | MessageEmbed | undefined> => {
   // Values
-  const userFlags = message.guild?.members.cache.get(
-    message.author.id
-  )?.permissions;
+  const userFlags = message.guild?.members.cache.get(message.author.id)
+    ?.permissions;
 
   // Permission checks
   const paramsValid = validationSchema?.isValidSync(params);

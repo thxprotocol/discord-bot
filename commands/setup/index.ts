@@ -10,7 +10,8 @@ export default listenerGenerator({
     'A group of commands that help guild owner-admins setting up their guild.',
   usageMessage: usageGenerate({
     name: 'setup',
-    desc: 'A group of commands that help guild owner-admins setting up their guild.',
+    desc:
+      'A group of commands that help guild owner-admins setting up their guild.',
     path: 'setup',
     childs: ['assetpool', 'guild']
   })
