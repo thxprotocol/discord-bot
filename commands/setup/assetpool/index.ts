@@ -44,6 +44,7 @@ const setup: CommandHandler = async message => {
       description: 'Please start this process again.'
     });
   }
+
   const contractAddress = contractAddressRes.first()?.cleanContent || '';
 
   if (!walletRegex.test(contractAddress)) {
