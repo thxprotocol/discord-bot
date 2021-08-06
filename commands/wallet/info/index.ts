@@ -8,6 +8,7 @@ import { listenerGenerator } from 'utils/command';
 import ListenerType from 'constants/ListenerType';
 import { failedEmbedGenerator, successEmbedGenerator } from 'utils/embed';
 import { getPrefix, usageGenerate } from 'utils/messages';
+import getDMChannelByUserId from 'utils/getDMChannelByUserId';
 import getMemberInfo from 'utils/axios/getMemberInfo';
 import { getAccessToken } from 'utils/axios';
 
@@ -19,6 +20,22 @@ const info: CommandHandler = async message => {
         'You have not linkeded a wallet yet. Create or update your wallet address.'
     });
   } else {
+    // Prepare user to prompt
+    let discordUser = await getDMChannelByUserId(message.author.id);
+    if (!discordUser.dmChannel) {
+      // Try to send an Initial to establish an DM Channel with user
+      // In many cases, discord choose to "forgot" an channel and
+      // This help to establish it again
+      await message.author.send('Here your wallet information');
+      discordUser = await getDMChannelByUserId(message.author.id);
+    }
+    if (!discordUser.dmChannel) {
+      return failedEmbedGenerator({
+        description:
+          "If you don't receive a DM from THX Bot, please check the message settings for your guild."
+      });
+    }
+
     const guild = await GuildSchema.findOne({
       id: message.guild?.id
     });
@@ -63,17 +80,20 @@ const info: CommandHandler = async message => {
       });
     }
 
-    return successEmbedGenerator({
-      title: 'Member information:',
-      description:
-        'Balance: ' +
-        info.token.balance +
-        ' ' +
-        info.token.symbol +
-        '\n' +
-        'Address: ' +
-        info.address
-    });
+    discordUser.send(
+      successEmbedGenerator({
+        title: 'Member information:',
+        description:
+          'Balance: ' +
+          info.token.balance +
+          ' ' +
+          info.token.symbol +
+          '\n' +
+          'Address: ' +
+          info.address
+      })
+    );
+    return;
   }
 };
 
