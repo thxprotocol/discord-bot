@@ -63,7 +63,7 @@ async function onMessage(message: Message): Promise<void> {
             'Successfully connected your wallet to a Asset Pool'
           );
         } catch (error) {
-          const errorMessage = error.response.data.error?.message;
+          const errorMessage = (error as Error).response.data.error?.message;
           if (errorMessage === 'Address is member already.') {
             channel?.members.push(currentUser.public_address);
             channel?.save();

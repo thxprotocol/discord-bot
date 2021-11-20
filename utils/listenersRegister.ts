@@ -18,7 +18,7 @@ function listenersRegister(client: Client, listenersPath: string): void {
         try {
           eventHandlers[index](...args);
         } catch (err) {
-          logger.error(err.message);
+          logger.error((err as Error).message);
         }
       });
     }
