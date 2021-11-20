@@ -7,6 +7,7 @@ import { Message } from 'discord.js';
 import { checkChannelIsPool } from 'models/channel/utils';
 import { getAccessToken, getClientWithAccess } from 'utils/axios';
 import { checkFromSelf, checkMessage } from '../utils/messages';
+import { AxiosError, AxiosResponse } from 'axios';
 
 async function onMessage(message: Message): Promise<void> {
   const dispatch = useDispatch();
@@ -63,7 +64,7 @@ async function onMessage(message: Message): Promise<void> {
             'Successfully connected your wallet to a Asset Pool'
           );
         } catch (error) {
-          const errorMessage = (error as Error).response.data.error?.message;
+          const errorMessage = (error as any).response.data.error?.message;
           if (errorMessage === 'Address is member already.') {
             channel?.members.push(currentUser.public_address);
             channel?.save();
