@@ -84,8 +84,7 @@ const info: CommandHandler = async message => {
     discordUser.send(
       successEmbedGenerator({
         title: 'Web Wallet ' + info.address + ':',
-        description:
-          'Balance: ' + info.balance.amount + ' ' + info.balance.symbol
+        description: 'Balance: ' + info.token.balance + ' ' + info.token.symbol
       })
     );
     return;
