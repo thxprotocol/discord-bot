@@ -7,7 +7,6 @@ import { Message } from 'discord.js';
 import { checkChannelIsPool } from 'models/channel/utils';
 import { getAccessToken, getClientWithAccess } from 'utils/axios';
 import { checkFromSelf, checkMessage } from '../utils/messages';
-import { AxiosError, AxiosResponse } from 'axios';
 
 async function onMessage(message: Message): Promise<void> {
   const dispatch = useDispatch();
