@@ -17,7 +17,7 @@ const info: CommandHandler = async message => {
   if (!user) {
     return failedEmbedGenerator({
       description:
-        'You have not linkeded a wallet yet. Create or update your wallet address.'
+        'You have not connected a Web Wallet. Create or update the wallet address for this Discord user.'
     });
   } else {
     // Prepare user to prompt
@@ -26,7 +26,7 @@ const info: CommandHandler = async message => {
       // Try to send an Initial to establish an DM Channel with user
       // In many cases, discord choose to "forgot" an channel and
       // This help to establish it again
-      await message.author.send('Here your wallet information');
+      await message.author.send('Retrieving your wallet information...');
       discordUser = await getDMChannelByUserId(message.author.id);
     }
     if (!discordUser.dmChannel) {
@@ -42,7 +42,7 @@ const info: CommandHandler = async message => {
 
     if (!guild?.client_id || !guild?.client_secret) {
       return failedEmbedGenerator({
-        description: `To do this, please setup Client ID and Client Secret for your Guild first by: \`${getPrefix()}setup guild\` command`
+        description: `Please setup Client ID and Client Secret for your Guild first with the \`${getPrefix()}setup guild\` command.`
       });
     }
     // Use axios to
@@ -53,7 +53,8 @@ const info: CommandHandler = async message => {
 
     if (!accessToken) {
       return failedEmbedGenerator({
-        description: 'Invalid Client ID or Client Secret, please setup again'
+        description:
+          'Invalid Client ID or Client Secret, please configure update your guild settings.'
       });
     }
 
@@ -64,7 +65,7 @@ const info: CommandHandler = async message => {
 
     if (!channel?.pool_address) {
       return failedEmbedGenerator({
-        description: `To do this, please setup Contract Address for your Channel first by: \`${getPrefix()}setup assetpool\` command`
+        description: `Please setup an Asset Pool contract address for your Guild first with the \`${getPrefix()}setup assetpool\` command.`
       });
     }
 
@@ -82,15 +83,9 @@ const info: CommandHandler = async message => {
 
     discordUser.send(
       successEmbedGenerator({
-        title: 'Member information:',
+        title: 'Web Wallet ' + info.address + ':',
         description:
-          'Balance: ' +
-          info.token.balance +
-          ' ' +
-          info.token.symbol +
-          '\n' +
-          'Address: ' +
-          info.address
+          'Balance: ' + info.balance.amount + ' ' + info.balance.symbol
       })
     );
     return;
@@ -104,7 +99,7 @@ export default listenerGenerator({
   handler: info,
   type: ListenerType.GENERAL,
   validationSchema: Yup.array().min(0).max(0),
-  helpMessage: 'Info about your membership',
+  helpMessage: 'View the balance for your Web Wallet',
   usageMessage: usageGenerate({
     name: 'info',
     desc: 'Wallet membership information.',

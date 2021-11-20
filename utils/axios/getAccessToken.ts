@@ -31,7 +31,7 @@ const getAccessToken = async (clientId: string, clientToken: string) => {
     params.append('scope', 'openid admin');
     const response: AccessTokenResponse = await axios({
       method: 'POST',
-      url: 'https://api.thx.network/token',
+      url: 'https://auth.thx.network/token',
       data: params
     });
     const currentTime = new Date().getTime() - BUFFER_TIME;

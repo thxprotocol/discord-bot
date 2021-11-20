@@ -34,7 +34,7 @@ const create: CommandHandler = async message => {
   }
 
   const emailRes = await promter.message(discordUser.dmChannel, {
-    question: 'What is your email?',
+    question: 'What e-mail address would you like to use?',
     userId: message.author.id,
     max: 1,
     timeout: 30000
@@ -43,14 +43,14 @@ const create: CommandHandler = async message => {
   if (!emailRes) {
     discordUser.send(
       failedEmbedGenerator({
-        description: 'Please start this process again later.'
+        description: 'Please try this command again at a later time.'
       })
     );
     return;
   } else if (!emailRes.size) {
     discordUser.send(
       failedEmbedGenerator({
-        description: 'Please start this process again later.'
+        description: 'Please try this command again at a later time.'
       })
     );
     return;
@@ -63,14 +63,14 @@ const create: CommandHandler = async message => {
 
   if (!isValidEmail) {
     return failedEmbedGenerator({
-      description: 'This e-mail address is invalid'
+      description: 'This e-mail address is invalid.'
     });
   }
 
   // Get User Password
 
   const passwordRes = await promter.message(discordUser.dmChannel, {
-    question: 'What is your password?',
+    question: 'What password would you like to use to encrypt your wallet?',
     userId: message.author.id,
     max: 1,
     timeout: 30000
@@ -79,14 +79,14 @@ const create: CommandHandler = async message => {
   if (!passwordRes) {
     discordUser.send(
       failedEmbedGenerator({
-        description: 'Please start this process again later.'
+        description: 'Oops. Please start this process again later.'
       })
     );
     return;
   } else if (!passwordRes.size) {
     discordUser.send(
       failedEmbedGenerator({
-        description: 'Please start this process again later.'
+        description: 'Oops. Please start this process again later.'
       })
     );
     return;
@@ -99,7 +99,7 @@ const create: CommandHandler = async message => {
   if (!isPasswordValid) {
     discordUser.send(
       failedEmbedGenerator({
-        description: 'Password cannot contain spaces'
+        description: 'Secret cannot contain spaces.'
       })
     );
     return;
@@ -114,7 +114,7 @@ const create: CommandHandler = async message => {
   if (!guild?.client_id || !guild?.client_secret) {
     discordUser.send(
       failedEmbedGenerator({
-        description: `To do this, please setup Client ID and Client Secret for your Guild first by: \`${getPrefix()}setup guild\` command`
+        description: `Please setup Client ID and Client Secret for your Guild first with the \`${getPrefix()}setup guild\` command.`
       })
     );
     return;
@@ -131,7 +131,8 @@ const create: CommandHandler = async message => {
     if (!accessToken) {
       discordUser.send(
         failedEmbedGenerator({
-          description: 'Invalid Client ID or Client Secret, please setup again'
+          description:
+            'Invalid Client ID or Client Secret, please configure your client credentials again.'
         })
       );
       return;
@@ -145,7 +146,7 @@ const create: CommandHandler = async message => {
     if (!channel?.pool_address) {
       discordUser.send(
         failedEmbedGenerator({
-          description: `To do this, please setup Contract Address for your Channel first by: \`${getPrefix()}setup assetpool\` command`
+          description: `Please setup an Asset Pool contract address for your Guild first with the \`${getPrefix()}setup assetpool\` command.`
         })
       );
       return;
@@ -161,7 +162,7 @@ const create: CommandHandler = async message => {
     if (!address) {
       discordUser.send(
         failedEmbedGenerator({
-          description: `Failed linking your wallet.`
+          description: `Could not create your Web Wallet.`
         })
       );
       return;
@@ -175,15 +176,14 @@ const create: CommandHandler = async message => {
 
     discordUser.send(
       successEmbedGenerator({
-        description: 'Successfully linked your wallet'
+        description: 'Successfully connected your wallet!'
       })
     );
     return;
   } else {
     discordUser.send(
       failedEmbedGenerator({
-        description:
-          'You already have linked a wallet. You can only update that wallet address.'
+        description: `You already have connected a wallet. Use \`${getPrefix()}wallet update\` to change the wallet connected to your Discord user.`
       })
     );
     return;
@@ -196,10 +196,10 @@ export default listenerGenerator({
   queued: false,
   handler: create,
   type: ListenerType.GENERAL,
-  helpMessage: 'Create user wallet',
+  helpMessage: 'Create a web wallet for your Discord user.',
   usageMessage: usageGenerate({
     name: 'create',
-    desc: 'Create user wallet',
+    desc: 'Create web wallet',
     path: 'wallet create',
     example: `wallet create`
   })

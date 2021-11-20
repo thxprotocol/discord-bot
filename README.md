@@ -86,17 +86,22 @@ wFzMnzyisiqjBmSXR0egHePIYOjSPtSg2jwQUrvWpAWWj79emM_3VHeEgcsxEmhTUAUxvtCu59K41FKf
 1. What emoji you want to use?
 :rocket:
 2. Please spectify your reward size?
-3
+10
 ```
 
 ### Link THX Wallet (all guild users)
 
 **1. Create a new THX wallet**
 
-A THX account will be created for e-mail and password you provide. Your temporary private key will be encrypted with the password you provide.
+A THX account will be created for e-mail and password you provide. Your temporary private key will be encrypted with the secret you provide.
 
 ```
->wallet create john@doe.com $secret123
+>wallet create
+
+1. What is your email?
+john@doe.com
+2. What secret should we use for encrypting your private key?
+$secret123456
 ```
 
 **2. Link an existing THX wallet**

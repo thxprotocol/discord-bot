@@ -22,7 +22,9 @@ const login: CommandHandler = async message => {
     // Try to send an Initial to establish an DM Channel with user
     // In many cases, discord choose to "forgot" an channel and
     // This help to establish it again
-    await message.author.send("Let's setup your Wallet with a few questions!");
+    await message.author.send(
+      "Let's setup your Web Wallet with a few questions!"
+    );
     discordUser = await getDMChannelByUserId(message.author.id);
   }
   if (!discordUser.dmChannel) {
@@ -34,7 +36,7 @@ const login: CommandHandler = async message => {
 
   // Prompt User to Input Email
   const emailRes = await promter.message(discordUser.dmChannel, {
-    question: 'What is your email?',
+    question: 'What is your e-mail address?',
     userId: message.author.id,
     max: 1,
     timeout: 30000
@@ -43,14 +45,14 @@ const login: CommandHandler = async message => {
   if (!emailRes) {
     discordUser.send(
       failedEmbedGenerator({
-        description: 'Please start this process again later.'
+        description: 'Oops. Please start this process again later.'
       })
     );
     return;
   } else if (!emailRes.size) {
     discordUser.send(
       failedEmbedGenerator({
-        description: 'Please start this process again later.'
+        description: 'Oops. Please start this process again later.'
       })
     );
     return;
@@ -75,7 +77,7 @@ const login: CommandHandler = async message => {
   if (!guild?.client_id || !guild?.client_secret) {
     discordUser.send(
       failedEmbedGenerator({
-        description: `To do this, please setup Client ID and Client Secret for your Guild first by: \`${getPrefix()}setup guild\` command`
+        description: `Please setup Client ID and Client Secret for your Guild first with the \`${getPrefix()}setup guild\` command.`
       })
     );
     return;
@@ -85,7 +87,7 @@ const login: CommandHandler = async message => {
   if (!user) {
     discordUser.send(
       failedEmbedGenerator({
-        description: 'Please create a wallet address first.'
+        description: 'Please create or connect a THX Web Wallet first.'
       })
     );
     return;
@@ -99,7 +101,8 @@ const login: CommandHandler = async message => {
     if (!accessToken) {
       discordUser.send(
         failedEmbedGenerator({
-          description: 'Invalid Client ID or Client Secret, please setup again'
+          description:
+            'Invalid Client ID or Client Secret, please configure your client credentials again.'
         })
       );
       return;
@@ -112,7 +115,7 @@ const login: CommandHandler = async message => {
     if (!channel?.pool_address) {
       discordUser.send(
         failedEmbedGenerator({
-          description: `To do this, please setup Contract Address for your Channel first by: \`${getPrefix()}setup assetpool\` command`
+          description: `Please setup an Asset Pool contract address for your Guild first with the \`${getPrefix()}setup assetpool\` command.`
         })
       );
       return;
@@ -138,7 +141,7 @@ const login: CommandHandler = async message => {
       successEmbedGenerator({
         title: 'Your one-time login has been sent!',
         description:
-          'Valid for 10 minutes. Go to your e-mail and get access to your rewards.'
+          'Valid for 10 minutes. Go to your inbox and get access to your Web Wallet.'
       })
     );
     return;

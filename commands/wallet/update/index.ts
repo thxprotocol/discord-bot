@@ -42,7 +42,7 @@ const update: CommandHandler = async message => {
     // In many cases, discord choose to "forgot" an channel and
     // This help to establish it again
     await message.author.send(
-      'We need few information before can update your wallet'
+      'We need some information before can update your wallet.'
     );
     discordUser = await getDMChannelByUserId(message.author.id);
   }
@@ -64,14 +64,14 @@ const update: CommandHandler = async message => {
   if (!walletRes) {
     discordUser.send(
       failedEmbedGenerator({
-        description: 'Please start this process again later.'
+        description: 'Oops. Please start this process again later.'
       })
     );
     return;
   } else if (!walletRes.size) {
     discordUser.send(
       failedEmbedGenerator({
-        description: 'Please start this process again later.'
+        description: 'Oops. Please start this process again later.'
       })
     );
     return;
@@ -84,7 +84,7 @@ const update: CommandHandler = async message => {
   if (!isValidWallet) {
     discordUser.send(
       failedEmbedGenerator({
-        description: 'This wallet address is invalid'
+        description: 'This wallet address is invalid.'
       })
     );
     return;
